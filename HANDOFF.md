@@ -1,44 +1,54 @@
 # Accessibility Handoff Guide
-**From Intent to Implementation: Bridging the Design-Dev Gap**
+**Bridge Design-to-Engineering: W3C ARIA Patterns**
 
-This guide establishes the standard for delivering accessible designs to the engineering team, ensuring that accessibility is "baked in" rather than "bolted on."
+This document defines the expected behavior of components for development. **Do not implement without consulting the keyboard patterns below.**
 
-## 1. "Ready for Dev" Checklist
-Before moving a component or page to the development stage, the designer must validate:
+## 1. Component Interaction Patterns (W3C APG)
 
-- [ ] **Contrast Ratios:** All text and UI elements meet WCAG AA standards (checked via Contrast Analyser).
-- [ ] **Tab Order:** Navigation flow is logically documented (1, 2, 3...).
-- [ ] **Alt Text:** Descriptive or decorative (`alt=""`) status is specified for every image.
-- [ ] **Heading Levels:** H1, H2, and H3 hierarchy is clearly marked.
-- [ ] **Interactive Elements:** Buttons vs. Links are correctly identified.
-- [ ] **Error States:** Feedback messages are designed and linked to their respective fields.
+### 🔘 Button
+*   **ARIA Attributes:** `role="button"`. For Toggles: `aria-pressed="true/false"`.
+*   **Keyboard Behavior:** `Enter` or `Space` activates the button.
+*   **Handoff Tip:** Define an `aria-label` for icon-only buttons.
 
-## 2. Technical Specification for Figma
-To facilitate implementation, designers should use annotations or a dedicated "Accessibility Layer" in Figma.
+### 🖼️ Modal Dialog
+*   **ARIA Attributes:** `role="dialog"`, `aria-modal="true"`, `aria-labelledby`.
+*   **Keyboard Behavior:**
+    *   **Focus Trap:** Focus must remain inside the modal.
+    *   `Esc`: Closes the modal.
+    *   **Return:** Focus returns to the trigger element upon closing.
 
-### Aria-labels & Names
-*   **IconButton:** Specify the label (e.g., `aria-label="Close menu"` for an 'X' icon).
-*   **Group Labels:** Specify if a section needs a label (e.g., `aria-labelledby`).
+### 📑 Tabs
+*   **ARIA Attributes:** `role="tablist"`, `role="tab"`, `role="tabpanel"`, `aria-selected`.
+*   **Keyboard Behavior:** `Arrows` to navigate, `Space/Enter` to activate.
 
-### Dynamic States
-Document how the component changes visually and semantically:
-*   **Expanded/Collapsed:** State changes for Accordions and Menus (`aria-expanded="true/false"`).
-*   **Selected:** State for Tabs or Radio buttons (`aria-selected="true"`).
-*   **Loading:** Use of `aria-busy` or `aria-live` for data fetching.
+### 🪗 Accordion
+*   **ARIA Attributes:** Header as `role="button"`, `aria-expanded`, `aria-controls`.
+*   **Keyboard Behavior:** `Space/Enter` to toggle, `Arrows` to navigate headers.
 
-### Focus Management
-*   **Focus Ring:** Design a high-contrast focus indicator for all interactive elements.
-*   **Focus Trapping:** Explicitly mark Modals and Overlays where the focus must be contained.
-*   **Return Target:** Annotate where the focus should return after an overlay is closed.
+### 📽️ Media (Video/Audio)
+*   **Requirements:**
+    *   **Captions:** Provide SRT or VTT files.
+    *   **Audio Description:** Specify if a secondary audio track is needed.
+    *   **Controls:** All player controls must be keyboard accessible and labeled.
 
-## 3. Governance Methodology (Design Ops)
+---
 
-1.  **Component Library:** Audit every component in the Design System against the [SKILL.md](file:///c:/Users/29921398822/Documents/Skills/SKILL.md) criteria.
-2.  **QA Cycle:** Conduct periodic audits using Axe DevTools and manual screen reader validation (NVDA/VoiceOver).
-3.  **Continuous Training:** Host "Accessibility Brown Bag" sessions to keep the team updated on WCAG 2.2 changes.
+## 2. Design Inspection Checklist (Design Ops)
+
+### Visual & Interaction
+- [ ] **Contrast:** Text (4.5:1) and UI (3:1) checked.
+- [ ] **Target Size:** Primary buttons/links at least **44x44px**.
+- [ ] **Focus Indicator:** Visible and high-contrast on all interactive elements.
+- [ ] **Alt Text:** Defined for all functional images.
+
+### Structure & Navigation
+- [ ] **Landmarks:** `<main>`, `<nav>`, and `<header>` regions defined.
+- [ ] **Heading Order:** H1 -> H2 -> H3 hierarchy preserved.
+- [ ] **Tab Order:** Documented logical sequence.
+- [ ] **Skip Links:** "Skip to content" link designed for the top of the page.
 
 ---
 
 ## Navigation
-*   [SKILL.md](file:///c:/Users/29921398822/Documents/Skills/SKILL.md) - Back to Taxonomy.
-*   [RESOURCES.md](file:///c:/Users/29921398822/Documents/Skills/RESOURCES.md) - Knowledge Base & Tools.
+*   [SKILL.md](./SKILL.md) - Skills Framework.
+*   [RESOURCES.md](./RESOURCES.md) - Technical Library.

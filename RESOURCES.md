@@ -3,43 +3,30 @@
 
 This document consolidates external references, QA tools, and technical terminology to support the implementation of the Accessibility Taxonomy.
 
-## 1. External References
+## 1. Technical Implementation References
 
-### Academic & Technical Institutions
-*   **University of Minnesota (Accessible IT):** One of the world's leading references for academic and institutional accessibility standards. [Access Site](https://accessibility.umn.edu/)
-*   **Library Accessibility Alliance (LAA):** Focused on accessibility for digital libraries and informational platforms. [Access Site](https://www.libraryaccessibility.org/)
-*   **W3C WAI (Web Accessibility Initiative):** The primary global source for WCAG 2.1/2.2 standards. [Access Site](https://www.w3.org/WAI/)
+### International (Gold Standard)
+*   **[W3C ARIA Patterns (APG)](https://www.w3.org/WAI/ARIA/apg/patterns/):** **Primary Technical Reference.** Defines how every component should behave (Roles, States, and Keyboard).
+*   **[WCAG 2.2 Quick Reference](https://www.w3.org/WAI/WCAG22/quickref/):** Official guide for success criteria.
+*   **[Good Practices Design](https://goodpractices.design/):** Visual and UX best practices for accessible components.
 
 ### Brazilian Community Resources
-*   **Guia-WCAG:** A practical and translated guide to understanding WCAG criteria. [Access Site](https://guia-wcag.com/)
-*   **Movimento Web para Todos (MWPT):** A Brazilian movement focusing on web accessibility culture and audits.
+*   **[Guia-WCAG](https://guia-wcag.com/):** Practical translation and interpretation of WCAG criteria in Portuguese.
+*   **[Movimento Web para Todos](https://mwpt.com.br/):** Brazilian movement focused on digital accessibility culture.
 
-## 2. QA & Validation Tools
+## 2. Accessibility Engineering Glossary
 
-### Automated Testing
-*   **Axe DevTools:** Browser extension (Chrome/Firefox) for fast, developer-centric accessibility audits.
-*   **WAVE (Web Accessibility Evaluation Tool):** Visual feedback on accessibility issues directly on the page.
-*   **Lighthouse:** Built-in Chrome tool for general performance and accessibility scoring.
-
-### Manual Testing
-*   **NVDA (NonVisual Desktop Access):** Free, open-source screen reader for Windows.
-*   **VoiceOver:** Built-in screen reader for macOS and iOS.
-*   **Colour Contrast Analyser (CCA):** Tool to check WCAG compliance for text and UI contrast ratios.
-*   **Silk Tide / Screen Reader Simulators:** Extensions that simulate the experience of different visual impairments.
-
-## 3. Technical Glossary
-
-| Term | Definition |
+| Term | Technical Definition |
 | :--- | :--- |
-| **A11y** | Numeronym for "Accessibility" (11 letters between A and Y). |
-| **ARIA** | Accessible Rich Internet Applications. A set of attributes to help screen readers understand complex UI components. |
-| **Landmark** | HTML5 semantic tags (`<nav>`, `<main>`, `<footer>`) that act as structural signposts. |
-| **Focus Order** | The sequence in which elements receive focus when navigating via Keyboard (Tab key). |
-| **Live Region** | A part of the page that is dynamically updated and should be announced by screen readers without moving focus. |
-| **Alt Text** | A textual description of an image provided via the `alt` attribute. |
+| **Focus Trapping** | A mechanism that prevents focus from leaving a Modal until it is closed. |
+| **Live Regions** | Areas that notify screen readers about dynamic changes (`aria-live`). |
+| **Role** | The semantic purpose of an element (e.g., `button`, `tab`, `dialog`). |
+| **States & Properties** | Dynamic attributes (`aria-checked`, `aria-expanded`) and relational ones (`aria-labelledby`). |
+| **AOM** | *Accessibility Object Model*. The representation of the interface for assistive technologies. |
+| **APCA** | New perceptual contrast algorithm (the future of WCAG 3.0). |
 
 ---
 
 ## Navigation
-*   [SKILL.md](file:///c:/Users/29921398822/Documents/Skills/SKILL.md) - Back to Taxonomy.
-*   [HANDOFF.md](file:///c:/Users/29921398822/Documents/Skills/HANDOFF.md) - Design-to-Dev Delivery Guide.
+*   [SKILL.md](./SKILL.md) - Skills Framework.
+*   [HANDOFF.md](./HANDOFF.md) - Delivery Guide.
