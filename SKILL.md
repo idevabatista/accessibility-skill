@@ -1,3 +1,8 @@
+---
+name: accessibility-skill
+description: A comprehensive accessibility taxonomy and governance framework mapping core competencies to WCAG 2.1/2.2 and W3C ARIA Patterns.
+---
+
 # Accessibility Skills Taxonomy (V5.2 - Definitive Edition)
 **Governance Framework for Design Ops & Product**
 
