@@ -1,8 +1,8 @@
-# Accessibility Skills Taxonomy (V6.0)
+# Accessibility Skills Taxonomy (V7.0)
 **Governance Framework for Design Ops & Product**
 
-> Updated 2026-05-14 with data extracted from: WebAIM, BBC Mobile Accessibility Guidelines, W3C APG and Deque axe.
-> This framework maps technical competencies to **WCAG 2.1/2.2** and **W3C ARIA Patterns**.
+> Updated 2026-05-14. Sources: WebAIM, BBC Mobile Accessibility Guidelines, W3C APG, Deque axe, React Aria, Radix UI, WCAG 3 / Silver direction.
+> This framework maps technical competencies to **WCAG 2.1/2.2**, **W3C ARIA Patterns**, and **modern frontend accessibility**.
 
 ---
 
@@ -18,6 +18,11 @@
 | **Content** | 6. Alternative Text | **A** | Visual Inclusion | WCAG 1.1.1 |
 | **Content** | 7. Accessible Media (Video/Audio) | **A / AA** | Sensory Inclusion | WCAG 1.2.2, 1.2.5 |
 | **Dynamic** | 8. ARIA & Rich Components | **A / AA** | Interface Robustness | W3C ARIA APG |
+| **Framework** | 9. Modern Framework Accessibility | **A / AA** | SPA & SSR Robustness | React Aria, Radix UI, Next.js |
+| **Mobile** | 10. Mobile Assistive Technology & Gestures | **A / AA** | Native Mobile Inclusion | iOS VoiceOver, Android TalkBack |
+| **Quality** | 11. Automated Testing & CI/CD | **A / AA** | Regression Prevention | axe-core, Playwright, Storybook |
+| **Performance** | 12. Performance & Motion Accessibility | **AA** | Cognitive & Visual Comfort | WCAG 2.3.3, prefers-reduced-motion |
+| **Cognitive** | 13. Cognitive Accessibility | **A / AA / AAA** | Inclusive UX for all | WCAG 3.3.x, COGA, Silver |
 
 ---
 
@@ -242,8 +247,193 @@
 | **VoiceOver** | Screen reader (iOS/macOS) | Real mobile/desktop Apple testing |
 | **Android Accessibility Scanner** | Mobile app | Target size and contrast audit on Android |
 
+
+---
+
+### 9. Modern Framework Accessibility
+
+- **Why it matters:** SPAs and SSR frameworks break native browser behaviours — page transitions don't reload, focus is not restored, and dynamic content is not announced without explicit management.
+- **Technical Acceptance Criteria:**
+
+#### React / Next.js
+  - **Hydration:** Ensure server-rendered ARIA attributes match client-rendered output — hydration mismatches can silently remove roles and states.
+  - **Route transitions (Next.js App Router):** On navigation, move focus to the `<h1>` or a `tabindex="-1"` landmark. Use `aria-live="polite"` region to announce the new page title.
+  - **Suspense / loading states:** Wrap loading boundaries with a visible loading indicator + `aria-busy="true"` on the container. Provide a `role="status"` message (e.g. "Loading results…").
+  - **Server Components:** Server components render no event handlers — interactive controls (buttons, links) must be Client Components. Do not place `onClick` on Server Component elements.
+  - **Virtualized lists (react-window, TanStack Virtual):** Expose total item count via `aria-setsize` and current position via `aria-posinset`. Announce loaded chunks via a polite live region.
+  - **Portals:** Elements rendered in a portal (e.g. modals, tooltips) must still follow focus management rules. The portal root must be outside `aria-hidden` containers.
+
+#### Headless UI Libraries
+  - **React Aria (Adobe):** Preferred for production — implements W3C APG keyboard patterns out of the box. Provides hooks (`useButton`, `useDialog`, `useListBox`) that handle ARIA states automatically.
+  - **Radix UI:** Accessible primitives with correct roles and keyboard behaviour. Customise visuals freely; do not override data-state or role attributes.
+  - **Headless UI (Tailwind Labs):** Correct ARIA for Dialog, Listbox, Combobox. Always provide visible labels — the library does not generate them automatically.
+  - **Rule:** Prefer headless libraries over building custom ARIA widgets from scratch. Verify keyboard behaviour with a screen reader after integrating — library defaults may not cover all edge cases.
+
+#### SPA Navigation Announcements
+  - Inject a visually-hidden `aria-live="polite"` region at root level (present from initial load).
+  - On each route change, update its text content with the new page title (e.g. `"Dashboard — App Name"`).
+  - Delay the announcement by ~100ms to allow DOM rendering to settle before the SR reads.
+  - Libraries: `@reach/skip-nav`, `next-a11y`, or a custom `useRouteAnnouncer` hook.
+
+- **How to Test:** Navigate between routes with VoiceOver/NVDA active. Verify page title is announced. Tab through the new page — confirm focus is not stranded on a removed element.
+
+---
+
+### 10. Mobile Assistive Technology & Gestures
+
+- **Why it matters:** Touch-first interfaces require gesture-aware design. Screen reader gestures on mobile differ fundamentally from keyboard navigation on desktop.
+
+#### iOS VoiceOver
+  - **Rotor navigation:** Users activate the rotor (two-finger twist) to switch navigation mode (Headings, Links, Form Controls, Landmarks, etc.). Ensure heading hierarchy and landmark structure are correct — rotor usability depends entirely on semantic markup.
+  - **Swipe order:** VoiceOver reads elements in DOM order, not visual order. CSS `order`, `flex-direction: row-reverse`, and `position: absolute` can create a mismatch between visual and swipe order. Always verify swipe sequence with VoiceOver active.
+  - **Semantic grouping:** Use `accessibilityElements` equivalent in web: group related elements with `role="group"` + `aria-label` so VoiceOver announces them as a unit instead of reading each child separately.
+  - **iOS Accessibility Tree nuances:** `display: contents` can drop elements from the iOS AT tree. `visibility: hidden` hides from VoiceOver; `opacity: 0` does not. Test both.
+  - **Custom actions:** For complex gestures (drag-to-reorder, swipe-to-delete), provide alternative accessible actions via `aria-roledescription` + keyboard/button equivalents.
+
+#### Android TalkBack
+  - **Gesture set:** Swipe right/left → next/previous element. Double-tap → activate. Two-finger swipe → scroll. Swipe up then right → activate first item in linear navigation.
+  - **Explore by touch:** TalkBack reads elements on finger hover. Ensure touch targets are large enough (48×48 dp) and that decorative elements are hidden (`importantForAccessibility="no"` equivalent: `aria-hidden="true"`).
+  - **Linear navigation vs. reading order:** TalkBack uses DOM order for linear navigation. Same swipe-order rule as VoiceOver applies.
+  - **Grouping:** Use `role="group"` + `aria-label` to group related controls (e.g. a card with image + title + button) into a single focusable unit — reduces swipe count.
+
+#### Mobile-First Semantic Grouping
+  - Design cards as a single focusable unit with a descriptive label rather than 3–5 separate focusable elements (image, title, button, price, tag).
+  - Pattern: wrapper element with `role="article"` or `role="listitem"`, a single `aria-label` describing the card's purpose, and inner interactive elements only focusable when the user explicitly enters the group.
+
+- **How to Test:** Enable VoiceOver (iOS: Settings → Accessibility → VoiceOver). Swipe through the entire screen. Enable TalkBack (Android: Settings → Accessibility → TalkBack). Verify swipe order matches visual intent.
+
+---
+
+### 11. Automated Testing & CI/CD
+
+- **Why it matters:** Manual audits find ~30% of issues. Automated testing catches the remaining systematic errors continuously, not just at release time.
+- **Technical Acceptance Criteria:**
+
+#### Tool Stack
+  - **axe-core:** Rule engine used by axe DevTools, Playwright, Jest-axe, Cypress-axe. Run as the baseline for all automated checks.
+  - **jest-axe / @testing-library + axe:** Unit-level accessibility assertions on component render. Add to every component test file.
+  - **Cypress-axe:** Integration-level checks on rendered pages. Run `cy.checkA11y()` after key user interactions.
+  - **Playwright + axe:** E2E accessibility snapshots across full user flows (login → dashboard → form submit). Export results as JSON for diffing.
+  - **Storybook a11y addon (`@storybook/addon-a11y`):** Runs axe on every Story in the browser. Add to CI so Stories fail on axe violations.
+  - **eslint-plugin-jsx-a11y:** Static analysis for common ARIA mistakes in JSX at development time. Required in `.eslintrc`.
+
+#### CI/CD Pipeline
+  ```
+  PR opened → eslint-plugin-jsx-a11y (lint) → jest-axe (unit) → Storybook a11y (component) → Playwright axe (E2E) → PR blocked if violations
+  ```
+  - Set axe `runOnly` to `wcag2a`, `wcag2aa`, `wcag21aa`, `best-practice`.
+  - Configure `disableRules` only with documented justification + issue tracker link.
+  - Export axe results to a JSON artefact per build — diff against the previous build to detect regressions.
+
+#### Accessibility Budget
+  - Define a maximum allowed violation count per severity level (critical, serious, moderate, minor).
+  - **Critical / Serious:** Zero tolerance — blocks merge.
+  - **Moderate / Minor:** Tracked and resolved within agreed sprint. Never increase week-over-week.
+  - Document the budget in `a11y.config.json` at the repo root.
+
+#### Regression Testing
+  - Playwright accessibility snapshots: capture the full axe results tree and commit as a snapshot. CI fails if new violations appear.
+  - Screen reader smoke test (manual, quarterly): NVDA + Chrome and VoiceOver + Safari — run the top 5 user flows.
+
+- **How to Test:** Run `npx axe-cli <url>` for a quick CLI audit. Check CI pipeline logs for axe violations on each PR.
+
+---
+
+### 12. Performance & Motion Accessibility
+
+- **Why it matters:** Performance degradation creates accessibility barriers — lost focus on re-render, inaccessible skeleton states, and CLS disorienting keyboard users. Motion can trigger vestibular disorders.
+- **Technical Acceptance Criteria:**
+
+#### Motion & Animation
+  - **`prefers-reduced-motion`:** All non-essential animations must be disabled or simplified when this media query is active.
+    ```css
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    ```
+  - **`prefers-reduced-transparency`:** Reduce or eliminate blur/glassmorphism effects.
+  - **Parallax:** Always off when `prefers-reduced-motion: reduce`. Parallax is a known vestibular disorder trigger.
+  - **Carousels / auto-advancing content:** Must have pause control (WCAG 2.2.2). Default: paused or speed ≤ 5 seconds between transitions.
+  - **Animation interruption:** Any animation that persists > 3 seconds must be stoppable, pausable, or hideable.
+  - **WCAG 2.3.3 (AAA):** Animation from interactions can be disabled. Treat as a strong recommendation.
+
+#### Skeleton Loading
+  - Skeleton screens must have `aria-busy="true"` on their container and `aria-label="Loading…"`.
+  - Do not use `aria-hidden="true"` on skeleton containers — screen readers will skip and receive no feedback.
+  - When content loads, remove `aria-busy`, restore focus if needed, and optionally announce completion via `role="status"`.
+
+#### CLS & Focus Loss
+  - **Cumulative Layout Shift (CLS):** Layout shifts can move the focused element off-screen or cause focus to be lost. Reserve space for dynamic content (images, ads, embeds) to prevent CLS.
+  - **Focus loss rule:** If the focused element is removed from the DOM (e.g. a drawer closes), focus must be explicitly moved — never allowed to fall back to `<body>`.
+  - **Lazy loading:** Images loaded below the fold must have explicit `width` and `height` attributes to prevent CLS.
+
+#### Cognitive Load & Performance
+  - **Time limits (WCAG 2.2.1):** Any time-limited action must be extendable, adjustable, or turn-off-able.
+  - **Interruptions (WCAG 2.2.4):** Notifications and alerts must be postponable (except emergencies).
+  - **Re-authentication (WCAG 2.2.5):** On session expiry, preserve all user data entered.
+
+- **How to Test:** Enable `prefers-reduced-motion` in OS settings (macOS: Accessibility → Display → Reduce Motion). Simulate CLS with Lighthouse. Audit `aria-busy` states during loading with screen reader active.
+
+---
+
+### 13. Cognitive Accessibility
+
+- **Why it matters:** 1 in 6 people has a cognitive or learning disability. WCAG 2.x underserves this group — WCAG 3 / Silver and the COGA (Cognitive Accessibility Guidance) task force address this gap directly.
+- **Technical Acceptance Criteria:**
+
+#### Reading & Language
+  - **Plain language:** Target a reading level appropriate for a 9-year-old (WCAG 3.1.5 AAA, COGA recommendation). Avoid jargon, acronyms, and passive voice.
+  - **Reading complexity:** Use short sentences (< 20 words), short paragraphs (< 4 sentences), and descriptive link text.
+  - **Text spacing (WCAG 1.4.12):** No loss of content when line-height ≥ 1.5×, letter-spacing ≥ 0.12em, word spacing ≥ 0.16em.
+  - **`lang` attribute:** Required on `<html>` and on any inline text in a different language — screen readers use it to switch speech synthesiser voice.
+  - **Dyslexia support:** Avoid justified text (creates uneven spacing). Prefer sans-serif fonts. Allow user font-size scaling without breaking layout (WCAG 1.4.4).
+
+#### Cognitive Overload & Distraction
+  - **Reduce visual noise:** Limit the number of actions available at once. Use progressive disclosure for complex forms.
+  - **Consistent navigation (WCAG 3.2.3):** Navigation components must appear in the same order on every page.
+  - **Consistent identification (WCAG 3.2.4):** Components with the same function must have the same label/name across pages.
+  - **Distraction reduction:** Moving, blinking, or scrolling content that starts automatically must be stoppable (WCAG 2.2.2).
+  - **Session timeouts:** Warn users at least 20 seconds before an authenticated session expires (WCAG 2.2.1).
+
+#### Timing & Interruptions
+  - **No time limits** on tasks unless absolutely necessary (security exceptions apply).
+  - **`aria-live="assertive"`** use must be minimal — it interrupts the user's current cognitive task.
+  - **Modals and popups** must not open without a user action — unexpected focus changes are highly disruptive for cognitive disabilities.
+  - **Error prevention (WCAG 3.3.4):** For legal or financial submissions, provide review + confirm step, or allow reversal.
+
+#### WCAG 3 / Silver Direction
+  - WCAG 3 moves from pass/fail binary to a **scoring model** — components earn points across multiple conformance levels.
+  - **COGA patterns** (precursor content for WCAG 3): chunking information, supporting memory, reducing cognitive barriers, providing reminders and feedback.
+  - **Design implication:** Start building a cognitive accessibility layer now — plain language reviews, user testing with neurodiverse participants, and distraction audits.
+
+- **How to Test:** Hemingway Editor for reading level. Manual review of navigation consistency across pages. User testing with participants who have cognitive disabilities or dyslexia.
+
+---
+
+## 3. QA Tools Reference
+
+| Tool | Type | Primary Use |
+| :--- | :--- | :--- |
+| **[WAVE (WebAIM)](https://wave.webaim.org/)** | Browser extension / API | Automated detection: errors, alerts, structure |
+| **[axe DevTools (Deque)](https://www.deque.com/axe/)** | Browser extension / CI-CD | Automated tests, pipeline integration |
+| **[WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker)** | Web tool | Contrast ratio verification |
+| **TPG Colour Contrast Analyser** | Desktop app | Eyedropper contrast analysis on any screen |
+| **NVDA / JAWS** | Screen reader (Windows) | Real announcement testing |
+| **VoiceOver** | Screen reader (iOS/macOS) | Real mobile/desktop Apple testing |
+| **Android Accessibility Scanner** | Mobile app | Target size and contrast audit on Android |
+| **[jest-axe](https://github.com/nickcolley/jest-axe)** | JS testing library | Unit-level axe assertions in Jest |
+| **[cypress-axe](https://github.com/component-driven/cypress-axe)** | Cypress plugin | Integration axe checks |
+| **[Playwright + axe-core](https://playwright.dev/docs/accessibility-testing)** | E2E testing | Full-flow accessibility snapshots |
+| **[eslint-plugin-jsx-a11y](https://github.com/jsx-eslint/eslint-plugin-jsx-a11y)** | ESLint plugin | Static ARIA analysis in JSX |
+| **[Storybook a11y addon](https://storybook.js.org/addons/@storybook/addon-a11y)** | Storybook | Per-Story axe checks in CI |
+| **[Hemingway Editor](https://hemingwayapp.com/)** | Web tool | Reading level and plain language audit |
+
 ---
 
 ## Navigation
 - [RESOURCES.md](RESOURCES.md) - Reference Library.
 - [HANDOFF.md](HANDOFF.md) - Engineering Specifications.
+
