@@ -1,8 +1,8 @@
 # Accessibility Skills Taxonomy (V6.0 — Crawled Edition)
 **Governance Framework for Design Ops & Product**
 
-> Atualizado em 2026-05-14 com dados extraídos de: WebAIM, BBC Mobile Accessibility Guidelines, W3C APG e Deque axe.
-> Este framework mapeia competências técnicas para **WCAG 2.1/2.2** e **W3C ARIA Patterns**.
+> Updated 2026-05-14 with data extracted from: WebAIM, BBC Mobile Accessibility Guidelines, W3C APG and Deque axe.
+> This framework maps technical competencies to **WCAG 2.1/2.2** and **W3C ARIA Patterns**.
 
 ---
 
@@ -10,14 +10,14 @@
 
 | Category | Core Skill | WCAG Level | Product Impact | Technical Ref. |
 | :--- | :--- | :--- | :--- | :--- |
-| **Structure** | 1. Hierarchy, Semantics & Landmarks | **A / AA** | Navegação estrutural & SEO | WCAG 1.3.1, 2.4.1, 2.4.6 |
-| **Structure** | 2. Lists and Data Tables | **A** | Integridade de dados | WCAG 1.3.1 |
-| **Design** | 3. Contrast and Discernibility | **AA / AAA** | Legibilidade universal | WCAG 1.4.3, 1.4.6, 1.4.11 |
-| **Interaction** | 4. Focus & Target Size | **A / AA** | Precisão de teclado & toque | WCAG 2.1.1, 2.4.7, 2.5.8 |
-| **Forms** | 5. Input & Error Management | **A / AA** | Conversão & UX | WCAG 3.3.1, 3.3.2, 3.3.3, 1.3.5 |
-| **Content** | 6. Alternative Text | **A** | Inclusão visual | WCAG 1.1.1 |
-| **Content** | 7. Accessible Media (Video/Audio) | **A / AA** | Inclusão sensorial | WCAG 1.2.2, 1.2.5 |
-| **Dynamic** | 8. ARIA & Rich Components | **A / AA** | Robustez da interface | W3C ARIA APG |
+| **Structure** | 1. Hierarchy, Semantics & Landmarks | **A / AA** | Structural Navigation & SEO | WCAG 1.3.1, 2.4.1, 2.4.6 |
+| **Structure** | 2. Lists and Data Tables | **A** | Data Integrity | WCAG 1.3.1 |
+| **Design** | 3. Contrast and Discernibility | **AA / AAA** | Universal Readability | WCAG 1.4.3, 1.4.6, 1.4.11 |
+| **Interaction** | 4. Focus & Target Size | **A / AA** | Keyboard & Touch Precision | WCAG 2.1.1, 2.4.7, 2.5.8 |
+| **Forms** | 5. Input & Error Management | **A / AA** | Conversion & UX | WCAG 3.3.1, 3.3.2, 3.3.3, 1.3.5 |
+| **Content** | 6. Alternative Text | **A** | Visual Inclusion | WCAG 1.1.1 |
+| **Content** | 7. Accessible Media (Video/Audio) | **A / AA** | Sensory Inclusion | WCAG 1.2.2, 1.2.5 |
+| **Dynamic** | 8. ARIA & Rich Components | **A / AA** | Interface Robustness | W3C ARIA APG |
 
 ---
 
@@ -25,222 +25,222 @@
 
 ### 1. Hierarchy, Semantics & Landmarks
 
-- **O "Porquê":** Define a "Accessibility Tree". Permite que usuários compreendam a estrutura e saltem entre seções. Screen readers anunciam landmarks e permitem navegação por atalhos.
-- **Critérios Técnicos de Aceitação:**
-  - **Landmarks obrigatórios:** `<main>`, `<nav>`, `<header>`, `<aside>`, `<footer>`. Usar `<form role="search">` para buscas.
-  - **Múltiplas regiões do mesmo tipo** devem ter `aria-label` ou `aria-labelledby` para diferenciação (ex: dois `<nav aria-label="Menu principal">`).
-  - **Região genérica:** Usar `role="region"` + `aria-label` para seções significativas sem landmark nativo.
-  - **Headings:** Hierarquia lógica H1 → H2 → H3. Nunca pular níveis por razões estéticas. Cada página/tela com `<title>` único e descritivo.
-  - **Skip Links:** Link "Ir para o conteúdo" visível no topo da página (BBC & WebAIM requirement).
-  - **Ordem de leitura:** Código-fonte deve refletir ordem lógica visual (esquerda→direita, topo→baixo).
-  - **Regra ARIA #1 (WebAIM):** Sempre preferir elemento HTML nativo. ARIA somente quando HTML não é suficiente.
-  - **Regra ARIA #2:** Não sobrescrever semântica nativa sem necessidade (ex: `<ul role="navigation">` destrói os benefícios de lista).
-- **Como Testar:** Auditoria de landmarks com screen reader (NVDA/JAWS/VoiceOver). Verificar outline de headings. Navegar apenas com `Tab` e `Shift+Tab`.
+- **Why it matters:** Defines the Accessibility Tree. Enables users to understand structure and jump between sections. Screen readers announce landmarks and allow shortcut navigation.
+- **Technical Acceptance Criteria:**
+  - **Required landmarks:** `<main>`, `<nav>`, `<header>`, `<aside>`, `<footer>`. Use `<form role="search">` for search regions.
+  - **Multiple regions of the same type** must have `aria-label` or `aria-labelledby` to differentiate them (e.g. two `<nav aria-label="Main navigation">`).
+  - **Generic region:** Use `role="region"` + `aria-label` for significant sections without a native landmark.
+  - **Headings:** Logical hierarchy H1 → H2 → H3. Never skip levels for aesthetic reasons. Every page/screen must have a unique, descriptive `<title>`.
+  - **Skip Links:** "Skip to main content" link visible at the top of the page (BBC & WebAIM requirement).
+  - **Reading order:** Source code must reflect logical visual order (left→right, top→bottom).
+  - **ARIA Rule #1 (WebAIM):** Always prefer native HTML elements. Use ARIA only when HTML is insufficient.
+  - **ARIA Rule #2:** Do not override native semantics unnecessarily (e.g. `<ul role="navigation">` destroys list benefits).
+- **How to Test:** Audit landmarks with a screen reader (NVDA/JAWS/VoiceOver). Check heading outline. Navigate using only `Tab` and `Shift+Tab`.
 
 ---
 
 ### 2. Lists and Data Tables
 
-- **O "Porquê":** Informa o número de itens e relações entre dados complexos. Screen readers anunciam "Lista, X itens".
-- **Critérios Técnicos de Aceitação:**
-  - **Listas:** Usar `<ul>`/`<ol>` para grupos de 2+ itens. Nunca usar CSS `list-style:none` em listas funcionais sem role.
-  - **Tabelas:** Usar `<th scope="col|row">` e `<caption>`. Nunca usar tabelas para layout.
-  - **Agrupamento:** `<optgroup>` em selects — atenção: suporte inconsistente em screen readers (WebAIM). Não depender para contexto vital.
-  - **Tabelas complexas:** Usar `aria-labelledby` para concatenar múltiplos cabeçalhos.
-- **Como Testar:** Verificar anúncios de screen reader ("Lista, 5 itens"). Navegar dentro de tabelas com setas do teclado.
+- **Why it matters:** Communicates the number of items and relationships between complex data. Screen readers announce "List, X items".
+- **Technical Acceptance Criteria:**
+  - **Lists:** Use `<ul>`/`<ol>` for groups of 2+ items. Never use CSS `list-style: none` on functional lists without a role.
+  - **Tables:** Use `<th scope="col|row">` and `<caption>`. Never use tables for layout.
+  - **Grouping:** `<optgroup>` in selects — note: inconsistent screen reader support (WebAIM). Do not rely on it for critical context.
+  - **Complex tables:** Use `aria-labelledby` to concatenate multiple headers.
+- **How to Test:** Check screen reader announcements ("List, 5 items"). Navigate table cells with arrow keys.
 
 ---
 
 ### 3. Contrast and Discernibility
 
-- **O "Porquê":** Garante legibilidade em condições adversas, para usuários com baixa visão, daltonismo, e em ambientes de alta luminosidade.
-- **Critérios Técnicos de Aceitação (BBC + WCAG):**
+- **Why it matters:** Ensures readability under adverse conditions, for users with low vision, colour blindness, and in high-luminance environments.
+- **Technical Acceptance Criteria (BBC + WCAG):**
 
-| Tipo de conteúdo | Ratio mínimo (WCAG AA) | Ratio ideal (WCAG AAA) |
+| Content Type | Minimum Ratio (WCAG AA) | Enhanced Ratio (WCAG AAA) |
 | :--- | :--- | :--- |
-| Texto normal (< 18pt / < 14pt bold) | **4.5:1** | 7:1 |
-| Texto grande (≥ 18pt / ≥ 14pt bold) | **3:1** | 4.5:1 |
-| Elementos de UI (bordas de input, ícones funcionais) | **3:1** | — |
-| Links inline diferenciados apenas por cor | **3:1** vs. texto ao redor | — |
+| Normal text (< 18pt / < 14pt bold) | **4.5:1** | 7:1 |
+| Large text (≥ 18pt / ≥ 14pt bold) | **3:1** | 4.5:1 |
+| UI components (input borders, functional icons) | **3:1** | — |
+| Inline links differentiated by colour only | **3:1** vs. surrounding text | — |
 
-  - **Gradientes e imagens:** Aplicar overlay semitransparente ou text-shadow. O ponto de medição é o pixel de menor contraste na área do texto (BBC guideline).
-  - **Cor não pode ser o único diferenciador** — sempre combinar com ícone, sublinhado ou forma.
-  - **Imagens de texto:** Evitar. Se necessário, aplicar 4.5:1.
-  - **Ferramenta de QA:** WebAIM Contrast Checker, TPG Colour Contrast Analyser, axe DevTools.
-- **Como Testar:** Colour Contrast Analyser (ferramenta). Inspecionar cor via Dev Tools. Testar em simulação de daltonismo.
+  - **Gradients and images:** Apply a semi-transparent overlay or text-shadow. The measurement point is the lowest-contrast pixel in the text area (BBC guideline).
+  - **Colour must not be the only differentiator** — always combine with icon, underline, or shape (links, errors, states).
+  - **Text images:** Avoid. If necessary, apply 4.5:1.
+  - **QA Tools:** WebAIM Contrast Checker, TPG Colour Contrast Analyser, axe DevTools.
+- **How to Test:** Run Colour Contrast Analyser. Inspect colour via Dev Tools. Test with colour-blindness simulation.
 
 ---
 
-### 4. Focus & Target Size (Interaction)
+### 4. Focus & Target Size
 
-- **O "Porquê":** Crítico para usuários de teclado e mobile. Sem indicador de foco visível, usuários de teclado ficam "perdidos" na interface.
-- **Critérios Técnicos de Aceitação:**
+- **Why it matters:** Critical for keyboard and mobile users. Without a visible focus indicator, keyboard users are "lost" in the interface.
+- **Technical Acceptance Criteria:**
 
 #### Focus Indicator
-  - **Proibido:** `outline: 0` ou `outline: none` em elementos focáveis sem substituto equivalente (WebAIM).
-  - **Padrão mínimo:** O indicador deve ter contraste de pelo menos **3:1** contra o fundo adjacente (WCAG 2.4.11 — AA em WCAG 2.2).
-  - **Recomendado:** Adicionar background-color ou border visíveis além do outline nativo.
-  - **Regra ARIA #4:** Elementos focáveis por `Tab` nunca devem ter `aria-hidden="true"`.
+  - **Prohibited:** `outline: 0` or `outline: none` on focusable elements without an equivalent visible substitute (WebAIM).
+  - **Minimum standard:** The indicator must have at least **3:1** contrast against the adjacent background (WCAG 2.4.11 — AA in WCAG 2.2).
+  - **Recommended:** Add a visible `background-color` or `border` in addition to the native outline.
+  - **ARIA Rule #4:** Focusable elements (reachable via `Tab`) must never have `aria-hidden="true"`.
 
 #### Target Size (BBC + WCAG 2.5.8)
 
-| Plataforma | Tamanho mínimo | Regra |
+| Platform | Minimum Size | Rule |
 | :--- | :--- | :--- |
-| **Web (WCAG 2.5.8 AA)** | **24x24 CSS px** com 24px de espaço livre ao redor | Critério mínimo |
-| **Web (best practice)** | **44x44 CSS px** | Recomendado por WebAIM & iOS HIG |
-| **iOS** | **44x44 pt** com pelo menos 1px entre targets | Apple HIG requirement |
-| **Android** | **48x48 dp** com pelo menos 8dp de espaço entre controles | Material Design |
-| **BBC Mobile (físico)** | **7x7mm** mínimo | Menor dedo médio humano |
-| **BBC Mobile (recomendado)** | **9-10mm** | Para acessibilidade total |
+| **Web (WCAG 2.5.8 AA)** | **24×24 CSS px** with 24px free space around | Minimum criterion |
+| **Web (best practice)** | **44×44 CSS px** | Recommended by WebAIM & iOS HIG |
+| **iOS** | **44×44 pt** with at least 1px between targets | Apple HIG requirement |
+| **Android** | **48×48 dp** with at least 8dp between controls | Material Design |
+| **BBC Mobile (physical)** | **7×7 mm** minimum | Smallest average human finger |
+| **BBC Mobile (recommended)** | **9–10 mm** | Full accessibility coverage |
 
-  - **CSS de referência:** `button { box-sizing: border-box; min-width: 44px; min-height: 44px; }`
-  - **Agrupamento:** Links adjacentes ao mesmo destino devem ser combinados em um único alvo de toque (BBC guideline).
-  - **tabindex="0":** Torna elemento focável via teclado (usar apenas em widgets customizados).
-  - **tabindex="-1":** Elemento focável apenas programaticamente (útil para mensagens de erro e diálogos).
-- **Como Testar:** Navegação exclusiva por `Tab`. Auditoria de touch targets no Figma (medir em px/pt/dp). Validar focus ring visível.
+  - **CSS reference:** `button { box-sizing: border-box; min-width: 44px; min-height: 44px; }`
+  - **Grouping:** Adjacent links pointing to the same destination should be merged into a single touch target (BBC guideline).
+  - **tabindex="0":** Makes an element keyboard-focusable (use only on custom interactive widgets).
+  - **tabindex="-1":** Element focusable only programmatically (useful for error messages and dialogs).
+- **How to Test:** Navigate exclusively with `Tab`. Audit touch targets in Figma (measure in px/pt/dp). Validate visible focus ring.
 
 ---
 
 ### 5. Input & Error Management
 
-- **O "Porquê":** Reduz fricção no preenchimento e prevê abandono de tarefa. Usuários com deficiências cognitivas dependem de mensagens claras e correção guiada.
-- **Critérios Técnicos de Aceitação:**
+- **Why it matters:** Reduces friction and prevents task abandonment. Users with cognitive disabilities depend on clear messages and guided correction.
+- **Technical Acceptance Criteria:**
 
 #### Labeling
-  - `<label for="id">` obrigatório e programaticamente associado a cada `<input>`.
-  - Clicar no label deve ativar/focar o controle (teste de associação rápida — WebAIM).
-  - Grupos de checkboxes/radio buttons: usar `<fieldset>` + `<legend>` (legend deve ser breve).
-  - **Nunca aninhar fieldsets** — causa comportamento estranho em screen readers.
+  - `<label for="id">` required and programmatically associated with every `<input>`.
+  - Clicking the label must activate/focus the control (quick association test — WebAIM).
+  - Groups of checkboxes/radio buttons: use `<fieldset>` + `<legend>` (legend should be brief).
+  - **Never nest fieldsets** — causes unexpected behaviour in screen readers.
 
 #### Required & Invalid
-  - Usar atributo `required` (HTML nativo) OU `aria-required="true"` — screen readers anunciam "obrigatório".
-  - **Atenção:** Asterisco (*) como único indicador de campo obrigatório é insuficiente.
-  - Após validação com erros: aplicar `aria-invalid="true"` no campo.
-  - Usar `aria-describedby` para associar o campo à mensagem de erro inline.
-  - Usar `autocomplete` em campos de propósito conhecido (WCAG 1.3.5).
+  - Use the `required` HTML attribute OR `aria-required="true"` — screen readers announce "required".
+  - **Note:** An asterisk (*) as the only indicator of a required field is insufficient.
+  - After validation with errors: apply `aria-invalid="true"` to the field.
+  - Use `aria-describedby` to associate the field with its inline error message.
+  - Use `autocomplete` on fields with a known input purpose (WCAG 1.3.5).
 
-#### Error Recovery (3 abordagens — WebAIM)
-1. **Error alert, then focus:** Modal customizado acessível → anunciar erro → focar no campo com problema.
-2. **Errors on top:** Mensagem acima do formulário com `focus()`. Listar todos os erros com links para os campos.
-3. **Inline errors:** Mensagens no contexto do campo via `aria-describedby`. Focar no primeiro campo inválido.
-4. **Combinação Errors on top + Inline:** Abordagem mais robusta (WebAIM best practice).
+#### Error Recovery (3 approaches — WebAIM)
+1. **Error alert, then focus:** Accessible custom modal → announce error → focus on the problematic field.
+2. **Errors on top:** Error summary above the form with `focus()`. List all errors with links to each field.
+3. **Inline errors:** Messages in the context of each field via `aria-describedby`. Focus on the first invalid field.
+4. **Errors on top + Inline (combined):** Most robust approach (WebAIM best practice).
 
 #### BBC Error Protocol
-  - Ao submeter formulário: usar `aria-live` region com lista de campos com erro acima do formulário.
-  - Mover foco para a mensagem de erro ao submeter.
-  - `aria-invalid="true"` + `aria-describedby` + cues visuais inline em cada campo inválido.
+  - On form submit: use an `aria-live` region with a list of invalid fields above the form.
+  - Move focus to the error message on submit.
+  - `aria-invalid="true"` + `aria-describedby` + inline visual cues on each invalid field.
 
-#### Tipos de Input
-  - Usar `<input type="tel">`, `type="email"`, `type="number"`, `type="date">` — dispara teclado correto em mobile.
-  - **Evitar** `<select>` múltiplo — suporte de teclado inconsistente. Prefira grupo de checkboxes.
-  - **Reset buttons devem ser evitados** — fáceis de acionar por engano (WebAIM).
+#### Input Types
+  - Use `<input type="tel">`, `type="email"`, `type="number">`, `type="date">` — triggers correct mobile keyboard and native browser validation.
+  - **Avoid** multi-select `<select>` — inconsistent keyboard support across browsers. Prefer a group of checkboxes.
+  - **Avoid reset buttons** — easy to trigger accidentally (WebAIM citing NN/g).
 
-- **Como Testar:** Submeter formulário com dados incorretos. Verificar se erros são anunciados. Testar apenas com teclado.
+- **How to Test:** Submit the form with incorrect data. Check whether errors are announced. Test with keyboard only.
 
 ---
 
 ### 6. Alternative Text
 
-- **O "Porquê":** Entrega o valor da imagem a usuários de screen reader. Impacta SEO.
-- **Critérios Técnicos de Aceitação (WebAIM Alt Text Framework):**
+- **Why it matters:** Delivers image value to screen reader users. Impacts SEO. Critical when images fail to load.
+- **Technical Acceptance Criteria (WebAIM Alt Text Framework):**
 
-| Tipo de imagem | Atributo `alt` | Critério |
+| Image Type | `alt` Attribute | Criterion |
 | :--- | :--- | :--- |
-| Imagem informativa | Descritivo e sucinto | Ex: `alt="Astronauta Ellen Ochoa"` |
-| Imagem decorativa | `alt=""` (null) | Nunca omitir o atributo |
-| Imagem linkada (único conteúdo do link) | Descrever a função/destino | Ex: `alt="Ver perfil Ellen Ochoa"` |
-| Imagem redundante (conteúdo já no texto) | `alt=""` (null) | Evitar redundância |
-| Imagem de botão (`<input type="image">`) | Descrever a ação | Ex: `alt="Enviar busca"` |
-| Imagem complexa (gráfico, mapa) | Alt resumido + link para descrição detalhada | — |
-| Logo linkado à homepage | Nome da empresa | Ex: `alt="Acme Company"` |
-| Imagem CSS/background | Não usar para conteúdo informativo | — |
+| Informative image | Descriptive and concise | e.g. `alt="Astronaut Ellen Ochoa"` |
+| Decorative image | `alt=""` (null) | Never omit the attribute |
+| Linked image (sole link content) | Describe the function/destination | e.g. `alt="View Ellen Ochoa's profile"` |
+| Redundant image (content already in adjacent text) | `alt=""` (null) | Avoid redundancy |
+| Image button (`<input type="image">`) | Describe the action | e.g. `alt="Submit search"` |
+| Complex image (chart, map) | Brief alt + link to detailed description | — |
+| Logo linked to homepage | Company name | e.g. `alt="Acme Company"` |
+| CSS/background image | Do not use for informative content | — |
 
-  - Não incluir "imagem de..." ou "gráfico de..." (screen readers já anunciam "gráfico").
-  - `longdesc` é **depreciado** — não usar.
-- **Como Testar:** Desativar imagens e verificar se contexto da página permanece claro.
+  - Do not include "image of…" or "graphic of…" (screen readers already announce "graphic").
+  - `longdesc` is **deprecated** — do not use.
+- **How to Test:** Disable images and verify the page context remains clear.
 
 ---
 
 ### 7. Accessible Media (Video & Audio)
 
-- **O "Porquê":** Inclusão para usuários surdos, cegos e com deficiências auditivas/visuais.
-- **Critérios Técnicos de Aceitação:**
+- **Why it matters:** Inclusion for deaf, blind, and hearing/visually impaired users.
+- **Technical Acceptance Criteria:**
 
-| Requisito | Nível WCAG | Aplicação |
+| Requirement | WCAG Level | Application |
 | :--- | :--- | :--- |
-| **Legendas sincronizadas** | **A (WCAG 1.2.2)** | Todo áudio relevante em vídeo pré-gravado |
-| **Transcrições em texto** | **A (WCAG 1.2.1)** | Podcasts, áudios standalone |
-| **Audiodescrição** | **AA (WCAG 1.2.5)** | Ações visuais não narradas |
-| **Controles de player acessíveis** | **A (WCAG 4.1.2)** | Todos os controles via teclado + aria-label |
-| **Sem autoplay com áudio** | **AA (WCAG 1.4.2)** | Autoplay apenas sem som, com controle de parar |
+| **Synchronised captions** | **A (WCAG 1.2.2)** | All relevant audio in pre-recorded video |
+| **Text transcripts** | **A (WCAG 1.2.1)** | Podcasts and standalone audio |
+| **Audio description** | **AA (WCAG 1.2.5)** | Visual actions not covered by narration |
+| **Accessible player controls** | **A (WCAG 4.1.2)** | All controls operable by keyboard + `aria-label` |
+| **No autoplay with audio** | **AA (WCAG 1.4.2)** | Autoplay only without sound, with a visible stop control |
 
-  - **Formato de legenda:** Fornecer arquivos SRT ou VTT.
-  - **Autoplay (BBC rule):** Vídeo pode autoplay sem som com controle visível de parar/pausar.
-- **Como Testar:** Assistir sem som → validar legendas. Testar todos os controles do player com teclado.
+  - **Caption format:** Provide SRT or VTT files.
+  - **Autoplay (BBC rule):** Video may autoplay without sound if a visible pause/stop control is present.
+- **How to Test:** Watch without sound → validate captions. Test all player controls with keyboard.
 
 ---
 
 ### 8. ARIA & Rich Components (W3C APG)
 
-- **O "Porquê":** Comunica estados e comportamentos para UI complexa (SPAs). ARIA expande o vocabulário semântico do HTML para casos não cobertos nativamente.
-- **5 Regras Fundamentais de Uso do ARIA (WebAIM):**
-  1. **Regra #1:** Se existe elemento HTML nativo equivalente, use-o.
-  2. **Regra #2:** Não altere semântica nativa.
-  3. **Regra #3:** Todos os controles ARIA interativos devem ser operáveis por teclado.
-  4. **Regra #4:** Controles interativos não podem ser escondidos (`aria-hidden="true"` em elementos focáveis).
-  5. **Regra #5:** Todo elemento interativo deve ter um nome acessível descritivo.
+- **Why it matters:** Communicates states and behaviours for complex UIs (SPAs). ARIA extends HTML's semantic vocabulary for cases not natively covered.
+- **5 Core Rules of ARIA Use (WebAIM):**
+  1. **Rule #1:** If a native HTML element exists, use it. Use ARIA only when HTML is insufficient.
+  2. **Rule #2:** Do not change native semantics.
+  3. **Rule #3:** All interactive ARIA controls must be keyboard operable.
+  4. **Rule #4:** Interactive controls must not be hidden (`aria-hidden="true"` on focusable elements is prohibited).
+  5. **Rule #5:** Every interactive element must have a descriptive accessible name.
 
-- **Critérios por Componente:**
+- **Criteria by Component:**
 
 #### Button
-  - **ARIA:** `role="button"`. Toggles: `aria-pressed="true/false"`. Com popup: `aria-haspopup`.
+  - **ARIA:** `role="button"`. Toggles: `aria-pressed="true/false"`. With popup: `aria-haspopup`.
   - **Disclosure/Accordion:** `aria-expanded="true|false"`.
-  - **Teclado:** `Enter` ou `Space` ativa.
-  - **Handoff:** `aria-label` obrigatório para botões icon-only.
+  - **Keyboard:** `Enter` or `Space` activates.
+  - **Handoff:** `aria-label` required for icon-only buttons.
 
 #### Modal Dialog (W3C APG)
   - **ARIA:** `role="dialog"`, `aria-modal="true"`, `aria-labelledby`.
-  - **Teclado:** `Tab` faz loop dentro do dialog. `Shift+Tab` navega reversamente. `Escape` fecha.
-  - **Focus placement:** Primeiro elemento focável (simples) / `tabindex="-1"` em elemento estático (complexo).
-  - Ao fechar: foco **retorna ao elemento trigger**.
+  - **Keyboard:** `Tab` loops within the dialog. `Shift+Tab` navigates in reverse. `Escape` closes.
+  - **Focus placement:** First focusable element (simple content) / `tabindex="-1"` on a static element (complex content).
+  - On close: focus **returns to the trigger element**.
 
 #### Tabs
   - **ARIA:** `role="tablist"`, `role="tab"`, `aria-selected="true/false"`, `role="tabpanel"`.
-  - **Teclado:** `←` `→` navega e ativa tabs. `Tab` entra/sai do grupo.
+  - **Keyboard:** `←` `→` navigates and activates tabs. `Tab` enters/exits the group.
 
 #### Accordion
-  - **ARIA:** Header como `<button aria-expanded="true|false" aria-controls="panel-id">`.
-  - **Teclado:** `Space/Enter` → toggle. `↑` `↓` → navega entre headers.
+  - **ARIA:** Header as `<button aria-expanded="true|false" aria-controls="panel-id">`.
+  - **Keyboard:** `Space/Enter` → toggle. `↑` `↓` → navigate between headers.
 
 #### Slider
-  - **Teclado:** `←` `→` incrementa/decrementa. `Home/End` → min/max. `PageUp/Down` → salto maior.
+  - **Keyboard:** `←` `→` increments/decrements. `Home/End` → min/max. `PageUp/Down` → larger step.
 
-#### Live Regions (Conteúdo Dinâmico)
-  - `aria-live="polite"`: Anunciar após pausa. Uso: status, notificações.
-  - `aria-live="assertive"`: Anunciar imediatamente. Uso: **apenas para erros críticos**.
-  - `role="alert"`: Equivalente a `aria-live="assertive"`.
-  - **Regra BBC:** `aria-live` deve ser definido no carregamento da página.
+#### Live Regions (Dynamic Content)
+  - `aria-live="polite"`: Announce after a pause. Use for: status, notifications.
+  - `aria-live="assertive"`: Announce immediately. Use **only for critical errors**.
+  - `role="alert"`: Equivalent to `aria-live="assertive"`.
+  - **BBC rule:** `aria-live` must be defined at page load — injecting it later via JS is unreliable.
 
-#### Rotulagem ARIA (Hierarquia de Prioridade)
-  - `aria-labelledby` > `aria-label` > `<label>` > `alt` > texto do elemento.
-  - `aria-label` sobrescreve labels visuais — garantir que o nome acessível inclua o texto visível (WCAG 2.5.3).
-  - `aria-describedby` → lido após o label — usar para instruções e mensagens de erro inline.
+#### ARIA Labelling (Priority Hierarchy)
+  - `aria-labelledby` > `aria-label` > `<label>` > `alt` > element text content.
+  - `aria-label` overrides visual labels — ensure the accessible name includes the visible text (WCAG 2.5.3).
+  - `aria-describedby` → read after the label — use for instructions and inline error messages.
 
-- **Como Testar:** Validação com screen reader (NVDA/JAWS/VoiceOver). axe DevTools. WAVE.
+- **How to Test:** Screen reader validation (NVDA/JAWS/VoiceOver). axe DevTools. WAVE.
 
 ---
 
 ## 3. QA Tools Reference
 
-| Ferramenta | Tipo | Uso Principal |
+| Tool | Type | Primary Use |
 | :--- | :--- | :--- |
-| **[WAVE (WebAIM)](https://wave.webaim.org/)** | Browser extension / API | Detecção automática: erros, alertas, estrutura |
-| **[axe DevTools (Deque)](https://www.deque.com/axe/)** | Browser extension / CI/CD | Testes automatizados, integração com pipelines |
-| **[WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker)** | Web tool | Verificação de ratio de contraste |
-| **TPG Colour Contrast Analyser** | Desktop app | Análise de contraste em qualquer tela (eyedropper) |
-| **NVDA / JAWS** | Screen reader (Windows) | Teste real de anúncios |
-| **VoiceOver** | Screen reader (iOS/macOS) | Teste real mobile/desktop Apple |
-| **Android Accessibility Scanner** | Mobile app | Auditoria de targets e contraste em Android |
+| **[WAVE (WebAIM)](https://wave.webaim.org/)** | Browser extension / API | Automated detection: errors, alerts, structure |
+| **[axe DevTools (Deque)](https://www.deque.com/axe/)** | Browser extension / CI-CD | Automated tests, pipeline integration |
+| **[WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker)** | Web tool | Contrast ratio verification |
+| **TPG Colour Contrast Analyser** | Desktop app | Eyedropper contrast analysis on any screen |
+| **NVDA / JAWS** | Screen reader (Windows) | Real announcement testing |
+| **VoiceOver** | Screen reader (iOS/macOS) | Real mobile/desktop Apple testing |
+| **Android Accessibility Scanner** | Mobile app | Target size and contrast audit on Android |
 
 ---
 

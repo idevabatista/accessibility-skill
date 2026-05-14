@@ -1,105 +1,105 @@
 # Accessibility Handoff Guide (V6.0)
 **Bridge Design-to-Engineering: W3C ARIA Patterns + BBC + WebAIM**
 
-> Atualizado em 2026-05-14 com especificações extraídas de W3C APG, WebAIM e BBC Mobile Guidelines.
+> Updated 2026-05-14 with specifications extracted from W3C APG, WebAIM and BBC Mobile Guidelines.
 
-**Não implementar sem consultar os padrões de teclado abaixo.**
+**Do not implement without consulting the keyboard patterns below.**
 
 ---
 
-## 1. Component Interaction Patterns (W3C APG — Spec Completa)
+## 1. Component Interaction Patterns (W3C APG — Full Spec)
 
 ### Button
 
-| Atributo ARIA | Valor | Quando usar |
+| ARIA Attribute | Value | When to Use |
 | :--- | :--- | :--- |
-| `role="button"` | — | Em `<div>` ou `<span>` customizados (prefira `<button>` nativo) |
+| `role="button"` | — | On custom `<div>` or `<span>` elements (prefer native `<button>`) |
 | `aria-pressed` | `"true"` / `"false"` | Toggle buttons |
 | `aria-expanded` | `"true"` / `"false"` | Accordion headers, disclosure widgets |
-| `aria-haspopup` | `"dialog"` / `"menu"` / `"listbox"` | Botões que abrem popups |
-| `aria-label` | texto descritivo | **Obrigatório** para botões icon-only |
+| `aria-haspopup` | `"dialog"` / `"menu"` / `"listbox"` | Buttons that open popups |
+| `aria-label` | descriptive text | **Required** for icon-only buttons |
 
-**Teclado:** `Enter` ou `Space` ativa.
-**Anti-pattern:** Nunca usar `<div role="button">` sem `tabindex="0"` + handlers `keydown` para Enter/Space.
+**Keyboard:** `Enter` or `Space` activates.
+**Anti-pattern:** Never use `<div role="button">` without `tabindex="0"` + `keydown` handlers for Enter/Space.
 
 ---
 
-### Modal Dialog (W3C APG — Especificação Completa)
+### Modal Dialog (W3C APG — Full Specification)
 
-**Estrutura HTML mínima:**
+**Minimum HTML structure:**
 ```html
 <div role="dialog" aria-modal="true" aria-labelledby="dialog-title">
-  <h2 id="dialog-title">Confirmar exclusão</h2>
-  <p id="dialog-desc">Esta ação não pode ser desfeita.</p>
-  <!-- conteúdo -->
-  <button>Cancelar</button>
-  <button>Confirmar</button>
+  <h2 id="dialog-title">Confirm deletion</h2>
+  <p id="dialog-desc">This action cannot be undone.</p>
+  <!-- content -->
+  <button>Cancel</button>
+  <button>Confirm</button>
 </div>
 ```
 
-**Atributos ARIA obrigatórios:**
+**Required ARIA attributes:**
 
-| Atributo | Regra |
+| Attribute | Rule |
 | :--- | :--- |
-| `role="dialog"` | **Obrigatório** no container do modal |
-| `aria-modal="true"` | **Obrigatório** — apenas quando código impede interação fora E CSS obscurece o fundo |
-| `aria-labelledby` | **Obrigatório** — referencia o `id` do título visível |
-| `aria-label` | Alternativa quando não há título visível |
-| `aria-describedby` | **Opcional** — omitir se conteúdo tem estrutura complexa (listas/tabelas) |
+| `role="dialog"` | **Required** on the modal container |
+| `aria-modal="true"` | **Required** — only when code prevents interaction outside AND CSS obscures the background |
+| `aria-labelledby` | **Required** — references the `id` of the visible title |
+| `aria-label` | Alternative when no visible title is present |
+| `aria-describedby` | **Optional** — omit if content has complex structure (lists/tables) |
 
-**Comportamento de teclado (W3C APG obrigatório):**
+**Keyboard behaviour (W3C APG mandatory):**
 
-| Tecla | Comportamento |
+| Key | Behaviour |
 | :--- | :--- |
-| `Tab` | Foco no próximo elemento focável DENTRO do dialog. No último → volta ao primeiro (loop) |
-| `Shift + Tab` | Foco no elemento anterior DENTRO do dialog. No primeiro → vai ao último (loop) |
-| `Escape` | Fecha o modal |
+| `Tab` | Focus on next focusable element INSIDE the dialog. On last → returns to first (loop) |
+| `Shift + Tab` | Focus on previous element INSIDE the dialog. On first → goes to last (loop) |
+| `Escape` | Closes the modal |
 
-**Protocolo de gerenciamento de foco:**
+**Focus management protocol:**
 
-| Cenário | Onde colocar o foco ao abrir |
+| Scenario | Where to place focus on open |
 | :--- | :--- |
-| Conteúdo simples | Primeiro elemento interativo |
-| Conteúdo complexo (listas/tabelas) | Elemento estático com `tabindex="-1"` no início do conteúdo |
-| Conteúdo longo (primeiro botão fora da viewport) | `tabindex="-1"` no título ou parágrafo inicial |
-| Ação destrutiva irreversível (delete, payment) | Ação menos destrutiva (ex: "Cancelar") |
-| Dialog informativo | Elemento mais frequentemente usado (ex: "OK") |
+| Simple content | First interactive element |
+| Complex content (lists/tables) | Static element with `tabindex="-1"` at the start of the content |
+| Long content (first button outside viewport) | `tabindex="-1"` on the title or opening paragraph |
+| Irreversible destructive action (delete, payment) | Least destructive action (e.g. "Cancel") |
+| Informational dialog | Most frequently used element (e.g. "OK") |
 
-**Ao fechar:** Foco retorna ao **elemento trigger** que abriu o modal.
-**Obrigatório:** Incluir botão visível (X ou "Cancelar") que fecha o modal.
+**On close:** Focus returns to the **trigger element** that opened the modal.
+**Required:** Include a visible button (X or "Cancel") that closes the modal.
 
 ---
 
 ### Tabs
 
 ```html
-<div role="tablist" aria-label="Seções do produto">
-  <button role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1">Especificações</button>
-  <button role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2">Avaliações</button>
+<div role="tablist" aria-label="Product sections">
+  <button role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1">Specifications</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2">Reviews</button>
 </div>
 <div role="tabpanel" id="panel-1" aria-labelledby="tab-1">...</div>
 <div role="tabpanel" id="panel-2" aria-labelledby="tab-2" hidden>...</div>
 ```
 
-| Atributo | Elemento | Valor |
+| Attribute | Element | Value |
 | :--- | :--- | :--- |
-| `role="tablist"` | Container das abas | — |
-| `role="tab"` | Cada aba | — |
-| `aria-selected` | Cada aba | `"true"` / `"false"` |
-| `aria-controls` | Cada aba | ID do painel correspondente |
-| `role="tabpanel"` | Cada painel | — |
-| `aria-labelledby` | Cada painel | ID da aba correspondente |
+| `role="tablist"` | Tab container | — |
+| `role="tab"` | Each tab | — |
+| `aria-selected` | Each tab | `"true"` / `"false"` |
+| `aria-controls` | Each tab | ID of corresponding panel |
+| `role="tabpanel"` | Each panel | — |
+| `aria-labelledby` | Each panel | ID of corresponding tab |
 
-**Teclado:**
+**Keyboard:**
 
-| Tecla | Comportamento |
+| Key | Behaviour |
 | :--- | :--- |
-| `Tab` | Entra no grupo (foca na aba ativa) / sai do grupo |
-| `←` / `→` | Navega e **ativa** a aba anterior/seguinte |
-| `Home` | Primeira aba |
-| `End` | Última aba |
+| `Tab` | Enters the group (focuses the active tab) / exits the group |
+| `←` / `→` | Navigates and **activates** the previous/next tab |
+| `Home` | First tab |
+| `End` | Last tab |
 
-> **Distinção crítica:** Este padrão é para "application tabs" que mudam conteúdo dinamicamente. Se os "tabs" são links para páginas diferentes, usar `Tab + Enter` (comportamento de link normal).
+> **Critical distinction:** This pattern applies to "application tabs" that dynamically change content. If the "tabs" are links to different pages, use `Tab + Enter` (standard link behaviour).
 
 ---
 
@@ -108,81 +108,81 @@
 ```html
 <h3>
   <button aria-expanded="false" aria-controls="panel-1">
-    Seção 1
+    Section 1
   </button>
 </h3>
 <div id="panel-1" hidden>
-  <!-- conteúdo -->
+  <!-- content -->
 </div>
 ```
 
-| Atributo | Elemento | Valor |
+| Attribute | Element | Value |
 | :--- | :--- | :--- |
-| `aria-expanded` | `<button>` header | `"true"` / `"false"` |
-| `aria-controls` | `<button>` header | ID do painel |
-| `hidden` ou `aria-hidden` | Painel | Quando fechado |
+| `aria-expanded` | Header `<button>` | `"true"` / `"false"` |
+| `aria-controls` | Header `<button>` | ID of the panel |
+| `hidden` or `aria-hidden` | Panel | When closed |
 
-**Teclado:** `Space` / `Enter` → toggle. `↑` `↓` → navega entre headers.
+**Keyboard:** `Space` / `Enter` → toggle. `↑` `↓` → navigate between headers.
 
 ---
 
 ### Slider
 
-**Teclado:**
+**Keyboard:**
 
-| Tecla | Comportamento |
+| Key | Behaviour |
 | :--- | :--- |
-| `←` `→` ou `↑` `↓` | Incrementa / decrementa valor |
-| `Home` | Valor mínimo |
-| `End` | Valor máximo |
-| `PageUp` / `PageDown` | Salto maior (ex: 10%) |
+| `←` `→` or `↑` `↓` | Increment / decrement value |
+| `Home` | Minimum value |
+| `End` | Maximum value |
+| `PageUp` / `PageDown` | Larger step (e.g. 10%) |
 
-**Double-headed slider:** `Tab` / `Shift+Tab` alterna entre os dois handles.
+**Double-headed slider:** `Tab` / `Shift+Tab` alternates between the two handles.
 
 ---
 
 ### Select / Combobox
 
-**Teclado (select nativo):**
+**Keyboard (native select):**
 
-| Tecla | Comportamento |
+| Key | Behaviour |
 | :--- | :--- |
-| `↑` `↓` | Navega opções |
-| `Enter` | Seleciona e fecha |
-| `Escape` | Fecha sem selecionar |
-| Digitação | Filtra / salta para opção |
+| `↑` `↓` | Navigate options |
+| `Enter` | Select and close |
+| `Escape` | Close without selecting |
+| Typing | Filter / jump to option |
 
-> **Anti-pattern:** Evitar `<select>` com `onChange` que dispara navegação (jump menu). Substituir por `<select>` + botão "Ir" separado — navegar com setas não deve causar ações.
+> **Anti-pattern:** Avoid `<select>` with `onChange` that triggers navigation (jump menu). Replace with `<select>` + a separate "Go" button — arrowing must not trigger actions.
 
 ---
 
-### Live Regions (Conteúdo Dinâmico)
+### Live Regions (Dynamic Content)
 
-| Valor `aria-live` | Quando usar | Exemplo |
+| `aria-live` value | When to Use | Example |
 | :--- | :--- | :--- |
-| `"polite"` | Atualizações não críticas, após pausa | Status de upload, mensagens de chat, estoque |
-| `"assertive"` | Erros críticos — interrompe leitura atual | Erro de validação de segurança, falha de pagamento |
-| `"off"` | Desativa anúncios | Mudanças irrelevantes |
+| `"polite"` | Non-critical updates, after a pause | Upload status, chat messages, stock updates |
+| `"assertive"` | Critical errors — interrupts current reading | Security validation error, payment failure |
+| `"off"` | Disables announcements | Irrelevant changes |
 
-**Roles equivalentes:**
+**Equivalent roles:**
 - `role="alert"` = `aria-live="assertive"` + `aria-atomic="true"`
-- `role="log"` = Live region com histórico (chat)
-- `role="status"` = `aria-live="polite"` (para status messages)
+- `role="log"` = Live region with history (chat)
+- `role="status"` = `aria-live="polite"` (for status messages)
 
-> **Regra de implementação:** `aria-live` deve ser definido no **carregamento inicial da página**. Injetar o atributo via JavaScript após carregamento não funciona de forma confiável.
+> **Implementation rule:** `aria-live` must be defined at **initial page load**. Injecting the attribute via JavaScript after load is unreliable across assistive technologies.
 
 ---
 
 ### Media (Video/Audio)
 
-| Requisito | Nível | Spec de Handoff |
+| Requirement | Level | Handoff Spec |
 | :--- | :--- | :--- |
-| **Legendas sincronizadas** | WCAG 1.2.2 (A) | Arquivo VTT ou SRT |
-| **Audiodescrição** | WCAG 1.2.5 (AA) | Especificar se necessário faixa AD separada |
-| **Transcrição em texto** | WCAG 1.2.1 (A) | Para áudios e podcasts |
-| **Controles acessíveis** | WCAG 4.1.2 (A) | Todos os controles via teclado + `aria-label` |
-| **Sem autoplay com áudio** | WCAG 1.4.2 (AA) | Autoplay apenas sem som, com controle de parar |
-| **Controle de volume** | BBC guideline | Controle independente do sistema |
+| **Synchronised captions** | WCAG 1.2.2 (A) | VTT or SRT file |
+| **Audio description** | WCAG 1.2.5 (AA) | Specify if a separate AD audio track is needed |
+| **Text transcript** | WCAG 1.2.1 (A) | For podcasts and standalone audio |
+| **Accessible controls** | WCAG 4.1.2 (A) | All controls operable by keyboard + `aria-label` |
+| **No autoplay with audio** | WCAG 1.4.2 (AA) | Autoplay only without sound, with a visible stop control |
+| **Volume control** | BBC guideline | Independent control, separate from system volume |
 
 ---
 
@@ -191,14 +191,14 @@
 ### HTML Reference Pattern (BBC + WebAIM)
 
 ```html
-<!-- 1. Região aria-live para anunciar erros (deve existir no load) -->
+<!-- 1. aria-live region for error announcements (must exist at page load) -->
 <div aria-live="polite" id="form-errors" class="sr-only"></div>
 
-<!-- 2. Formulário -->
+<!-- 2. Form -->
 <form>
   <div class="field-group">
     <label for="email">Email <span aria-hidden="true">*</span></label>
-    <!-- aria-required anuncia "obrigatório" -->
+    <!-- aria-required announces "required" to screen readers -->
     <input
       id="email"
       type="email"
@@ -206,69 +206,69 @@
       aria-invalid="true"
       aria-describedby="email-error"
     >
-    <!-- Mensagem de erro inline -->
+    <!-- Inline error message -->
     <span id="email-error" role="alert">
-      Erro: Insira um endereço de email válido (ex: nome@dominio.com)
+      Error: Enter a valid email address (e.g. name@domain.com)
     </span>
   </div>
 </form>
 ```
 
-### Protocolo de Validação (3 passos obrigatórios)
-1. **Anunciar:** Erro visível + anunciado por screen reader (`aria-live` region ou `role="alert"`).
-2. **Identificar:** Indicar especificamente qual campo precisa correção (`aria-invalid="true"` + mensagem inline).
-3. **Permitir correção:** Mover foco para o primeiro campo inválido + manter form preenchido.
+### Validation Protocol (3 mandatory steps)
+1. **Announce:** Error visible + announced by screen reader (`aria-live` region or `role="alert"`).
+2. **Identify:** Indicate specifically which field needs correction (`aria-invalid="true"` + inline message).
+3. **Allow correction:** Move focus to the first invalid field + keep the form data intact.
 
 ---
 
 ## 3. Design Inspection Checklist V6.0 (Design Ops)
 
 ### Visual & Contrast
-- [ ] **Texto normal:** Contraste ≥ **4.5:1** (WCAG 1.4.3 AA)
-- [ ] **Texto grande** (≥ 18pt ou ≥ 14pt bold): Contraste ≥ **3:1**
-- [ ] **Elementos de UI** (bordas de input, ícones funcionais): Contraste ≥ **3:1** (WCAG 1.4.11)
-- [ ] **Gradientes e imagens de fundo:** Texto sobre gradiente com overlay testado no ponto de menor contraste
-- [ ] **Cor como único diferenciador:** Combinada com ícone, forma ou sublinhado (links, erros, estados)
+- [ ] **Normal text:** Contrast ≥ **4.5:1** (WCAG 1.4.3 AA)
+- [ ] **Large text** (≥ 18pt or ≥ 14pt bold): Contrast ≥ **3:1**
+- [ ] **UI components** (input borders, functional icons): Contrast ≥ **3:1** (WCAG 1.4.11)
+- [ ] **Gradients and background images:** Text on gradient tested at the lowest-contrast pixel
+- [ ] **Colour as sole differentiator:** Combined with icon, shape or underline (links, errors, states)
 
 ### Target Size & Focus
-- [ ] **Botões/links primários:** Mínimo **44x44px** (recomendado para todos)
-- [ ] **Mínimo absoluto (WCAG 2.5.8):** 24x24px com 24px de espaço livre ao redor
-- [ ] **iOS nativo:** 44x44pt | **Android:** 48x48dp com 8dp entre controles | **BBC Mobile:** 7x7mm mínimo físico
-- [ ] **Focus ring:** Visível e com contraste ≥ 3:1 contra o fundo adjacente
-- [ ] **Focus ring:** Não usar `outline: none` sem substituto equivalente visível
-- [ ] **Links adjacentes ao mesmo destino:** Combinados em único target de toque
+- [ ] **Primary buttons/links:** Minimum **44×44 px** (recommended for all)
+- [ ] **Absolute minimum (WCAG 2.5.8):** 24×24 px with 24 px free space around
+- [ ] **Native iOS:** 44×44 pt | **Android:** 48×48 dp with 8 dp between controls | **BBC Mobile:** 7×7 mm physical minimum
+- [ ] **Focus ring:** Visible with ≥ 3:1 contrast against the adjacent background
+- [ ] **Focus ring:** Do not use `outline: none` without an equivalent visible substitute
+- [ ] **Adjacent links to the same destination:** Merged into a single touch target
 
 ### Structure & Navigation
-- [ ] **Skip link:** "Ir para o conteúdo" visível no topo da página
-- [ ] **Landmarks:** `<main>`, `<nav>`, `<header>`, `<footer>` definidos
-- [ ] **Múltiplos navs:** Diferenciados por `aria-label`
-- [ ] **Hierarquia H1→H2→H3:** Preservada sem pular níveis
-- [ ] **Título de página/tela:** Único e descritivo por página
-- [ ] **Ordem de Tab:** Documentada e segue fluxo visual lógico
-- [ ] **tabindex positivo (>0):** Nunca usado — destrói ordem natural
+- [ ] **Skip link:** "Skip to main content" visible at the top of the page
+- [ ] **Landmarks:** `<main>`, `<nav>`, `<header>`, `<footer>` defined
+- [ ] **Multiple navs:** Differentiated by `aria-label`
+- [ ] **Heading hierarchy H1→H2→H3:** Preserved without skipping levels
+- [ ] **Page/screen title:** Unique and descriptive per page
+- [ ] **Tab order:** Documented and follows logical visual flow (left→right, top→bottom)
+- [ ] **Positive tabindex (>0):** Never used — destroys natural order
 
 ### Forms & Inputs
-- [ ] **Labels:** Programaticamente associados a cada input (`<label for>` ou `aria-labelledby`)
-- [ ] **Campos obrigatórios:** `required` ou `aria-required="true"` (não apenas asterisco visual)
-- [ ] **Erros:** `aria-invalid="true"` + `aria-describedby` apontando para mensagem de erro
-- [ ] **Mensagem de erro:** Visível + anunciada por SR + indica especificamente o que corrigir
-- [ ] **Autocomplete:** Atributo definido para campos de dados pessoais (WCAG 1.3.5)
-- [ ] **Tipo de input correto:** `type="email"`, `type="tel"`, `type="number"` quando aplicável
+- [ ] **Labels:** Programmatically associated with every input (`<label for>` or `aria-labelledby`)
+- [ ] **Required fields:** `required` or `aria-required="true"` (not just a visual asterisk)
+- [ ] **Errors:** `aria-invalid="true"` + `aria-describedby` pointing to the error message
+- [ ] **Error message:** Visible + announced by SR + specifies what to correct
+- [ ] **Autocomplete:** Attribute defined for personal data fields (WCAG 1.3.5)
+- [ ] **Correct input type:** `type="email"`, `type="tel"`, `type="number"` where applicable
 
 ### ARIA & Rich Components
-- [ ] **Alt text:** Definido para todas as imagens funcionais (null `alt=""` para decorativas)
-- [ ] **Botões icon-only:** `aria-label` definido
-- [ ] **Modais:** `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, focus trap, retorno de foco ao fechar
-- [ ] **Tabs:** `role="tablist"`, `role="tab"`, `aria-selected`, `role="tabpanel"` estruturados
-- [ ] **Accordions:** `aria-expanded` atualizado no toggle
-- [ ] **Live regions:** `aria-live` definido no load da página para regiões dinâmicas
-- [ ] **Erros críticos:** `role="alert"` ou `aria-live="assertive"` (use com cautela)
+- [ ] **Alt text:** Defined for all functional images (null `alt=""` for decorative)
+- [ ] **Icon-only buttons:** `aria-label` defined
+- [ ] **Modals:** `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, focus trap, focus returned on close
+- [ ] **Tabs:** `role="tablist"`, `role="tab"`, `aria-selected`, `role="tabpanel"` properly structured
+- [ ] **Accordions:** `aria-expanded` updated on toggle
+- [ ] **Live regions:** `aria-live` defined at page load for dynamic regions
+- [ ] **Critical errors:** `role="alert"` or `aria-live="assertive"` (use sparingly)
 
 ### Media
-- [ ] **Vídeos:** Legendas (VTT/SRT) especificadas
-- [ ] **Áudios:** Transcrição disponível
-- [ ] **Audiodescrição:** Especificada se há informação visual não narrada
-- [ ] **Controles de player:** Todos acessíveis por teclado + rotulados
+- [ ] **Videos:** Captions (VTT/SRT) specified
+- [ ] **Audio:** Transcript available
+- [ ] **Audio description:** Specified if there is visual information not covered by narration
+- [ ] **Player controls:** All keyboard accessible + labelled
 
 ---
 
