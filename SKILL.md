@@ -1,4 +1,4 @@
-# Accessibility Skills Taxonomy (V6.0 — Crawled Edition)
+# Accessibility Skills Taxonomy (V6.0)
 **Governance Framework for Design Ops & Product**
 
 > Updated 2026-05-14 with data extracted from: WebAIM, BBC Mobile Accessibility Guidelines, W3C APG and Deque axe.
