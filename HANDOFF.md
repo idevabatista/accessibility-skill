@@ -221,54 +221,44 @@
 
 ---
 
-## 3. Design Inspection Checklist V6.0 (Design Ops)
+## 3. Design Inspection Checklist V7.0 (Design Ops - Figma Focus)
 
 ### Visual & Contrast
-- [ ] **Normal text:** Contrast ≥ **4.5:1** (WCAG 1.4.3 AA)
-- [ ] **Large text** (≥ 18pt or ≥ 14pt bold): Contrast ≥ **3:1**
-- [ ] **UI components** (input borders, functional icons): Contrast ≥ **3:1** (WCAG 1.4.11)
-- [ ] **Gradients and background images:** Text on gradient tested at the lowest-contrast pixel
-- [ ] **Colour as sole differentiator:** Combined with icon, shape or underline (links, errors, states)
+- [ ] **Normal text:** Contrast ratio ≥ **4.5:1** checked (WCAG 1.4.3 AA).
+- [ ] **Large text** (≥ 18pt or ≥ 14pt bold): Contrast ratio ≥ **3:1** checked.
+- [ ] **UI components** (borders, interactive states, functional icons): Contrast ≥ **3:1** checked (WCAG 1.4.11).
+- [ ] **Backgrounds:** Visual text on gradients or image background areas overlay-protected and tested at lowest contrast pixel.
+- [ ] **Beyond Color:** Visual states, status cues, links, and errors differentiated by underlines, icons, or shapes, not just color.
 
-### Target Size & Focus
-- [ ] **Primary buttons/links:** Minimum **44×44 px** (recommended for all)
-- [ ] **Absolute minimum (WCAG 2.5.8):** 24×24 px with 24 px free space around
-- [ ] **Native iOS:** 44×44 pt | **Android:** 48×48 dp with 8 dp between controls | **BBC Mobile:** 7×7 mm physical minimum
-- [ ] **Focus ring:** Visible with ≥ 3:1 contrast against the adjacent background
-- [ ] **Focus ring:** Do not use `outline: none` without an equivalent visible substitute
-- [ ] **Adjacent links to the same destination:** Merged into a single touch target
+### Target Size & Focus State
+- [ ] **Primary touch targets:** Minimum visual layout size of **44×44px** designed (web & iOS best practice).
+- [ ] **Spacing margins:** At least 8dp spacing on Android components or 1px on iOS to prevent miss-touches (WCAG 2.5.8).
+- [ ] **Focus indicator:** High-contrast focus state (:focus visual outline) designed and verified for all interactive controls (minimum 3:1 contrast ratio).
+- [ ] **Adjacent targets:** Dual controls pointing to the exact same landing page combined visually into a single larger touch container.
 
-### Structure & Navigation
-- [ ] **Skip link:** "Skip to main content" visible at the top of the page
-- [ ] **Landmarks:** `<main>`, `<nav>`, `<header>`, `<footer>` defined
-- [ ] **Multiple navs:** Differentiated by `aria-label`
-- [ ] **Heading hierarchy H1→H2→H3:** Preserved without skipping levels
-- [ ] **Page/screen title:** Unique and descriptive per page
-- [ ] **Tab order:** Documented and follows logical visual flow (left→right, top→bottom)
-- [ ] **Positive tabindex (>0):** Never used — destroys natural order
+### Structure & Conceptual Navigation
+- [ ] **Visual Hierarchy:** Typographic heading hierarchy mapped clearly (concept H1 → H2 → H3 layout).
+- [ ] **Section Landmarks:** Clear visual segregation of header, navigation menus, main content, and footer regions.
+- [ ] **Reading Flow:** Conceptual L-to-R or visual grid sequence verified for natural scanning flow.
+- [ ] **Keyboard Skip Flow:** Visual and functional bypass action planned for keyboard/switch-control users at the top of the interface.
+- [ ] **Page Title:** Unique and descriptive visual page/screen label defined.
 
-### Forms & Inputs
-- [ ] **Labels:** Programmatically associated with every input (`<label for>` or `aria-labelledby`)
-- [ ] **Required fields:** `required` or `aria-required="true"` (not just a visual asterisk)
-- [ ] **Errors:** `aria-invalid="true"` + `aria-describedby` pointing to the error message
-- [ ] **Error message:** Visible + announced by SR + specifies what to correct
-- [ ] **Autocomplete:** Attribute defined for personal data fields (WCAG 1.3.5)
-- [ ] **Correct input type:** `type="email"`, `type="tel"`, `type="number"` where applicable
+### Form & State Mockups
+- [ ] **Field Labels:** Persistent visual label designed for every single input field (do not hide instruction details purely inside placeholders).
+- [ ] **Field States:** Hover, Focus, Disabled, Active, and Error visual states fully designed.
+- [ ] **Inline Error Layout:** Error message mockups designed close to their specific inputs, using descriptive help copy and supporting warning icons.
+- [ ] **Radio/Checkbox Groups:** Wrapped visually under clear, concise group headers.
 
-### ARIA & Rich Components
-- [ ] **Alt text:** Defined for all functional images (null `alt=""` for decorative)
-- [ ] **Icon-only buttons:** `aria-label` defined
-- [ ] **Modals:** `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, focus trap, focus returned on close
-- [ ] **Tabs:** `role="tablist"`, `role="tab"`, `aria-selected`, `role="tabpanel"` properly structured
-- [ ] **Accordions:** `aria-expanded` updated on toggle
-- [ ] **Live regions:** `aria-live` defined at page load for dynamic regions
-- [ ] **Critical errors:** `role="alert"` or `aria-live="assertive"` (use sparingly)
+### Conceptual ARIA & Interaction Behavior
+- [ ] **Alternative Text Spec:** Design notes include suggested alt descriptions for informative illustrations/graphics, and explicitly marks decorative assets.
+- [ ] **Icon-Only Labels:** Annotations explicitly state accessible descriptive names for icon-only actions (such as carousel arrows prev/next).
+- [ ] **Modal Behaviors:** Dimmed backdrop overlay designed and closed buttons clearly highlighted. Focus flow order annotated.
+- [ ] **Rich Widgets:** Complex tab-changes, auto-advancing carousels, and sliding accordions have clearly planned interactive states and visual play/pause controls.
 
-### Media
-- [ ] **Videos:** Captions (VTT/SRT) specified
-- [ ] **Audio:** Transcript available
-- [ ] **Audio description:** Specified if there is visual information not covered by narration
-- [ ] **Player controls:** All keyboard accessible + labelled
+### Media Design
+- [ ] **Video overlays:** Graphic captions overlay layout designed for video elements.
+- [ ] **Transcripts:** Visual entry points (buttons/links) for complete audio/video text transcripts planned.
+- [ ] **Autoplay:** Visual toggle/pause action designed for any auto-advancing media assets.
 
 ---
 

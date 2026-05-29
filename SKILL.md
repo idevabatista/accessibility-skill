@@ -1,28 +1,43 @@
-# Accessibility Skills Taxonomy (V7.0)
-**Governance Framework for Design Ops & Product**
+# Accessibility Skills Taxonomy (V7.0 - Multi-Context Edition)
+**Governance Framework for Design Ops & Engineering**
 
-> Updated 2026-05-14. Sources: WebAIM, BBC Mobile Accessibility Guidelines, W3C APG, Deque axe, React Aria, Radix UI, WCAG 3 / Silver direction.
-> This framework maps technical competencies to **WCAG 2.1/2.2**, **W3C ARIA Patterns**, and **modern frontend accessibility**.
+> Updated 2026-05-29. Sources: WebAIM, BBC Mobile Accessibility Guidelines, W3C APG, Deque axe, React Aria, Radix UI, WCAG 3 / Silver direction.
+> This framework maps technical and design competencies to **WCAG 2.1/2.2**, **W3C ARIA Patterns**, and **modern frontend accessibility**.
+
+---
+
+## 💡 Core Audit Principles (Context-Awareness)
+
+Before performing any audit, identify the context of the artifact provided:
+
+1.  🎨 **UX/UI Design (Figma / Mockups / Screens)**
+    *   **Goal:** Document critical visual and interaction design accessibility gaps.
+    *   **Rule:** **NEVER** report missing HTML elements, tags, attributes, or ARIA properties (e.g., `lang`, `role`, `aria-*`, `<main>`).
+    *   **Focus on:** Color contrast ratios, touch target sizes, visual focus indicator designs, non-color state indicators, heading hierarchy concepts, alternative text specs, and annotation of intended keyboard sequences.
+
+2.  💻 **Front-end Development (HTML / CSS / JS / Live URLs)**
+    *   **Goal:** Audit technical semantic implementation and screen reader compatibility.
+    *   **Focus on:** HTML5 landmarks, correct tab order, skip links, semantic headings (`<h1>`-`<h6>`), lists/tables semantics, form label association, ARIA roles, dynamic states (`aria-expanded`, `aria-selected`), framework routing focus, and keyboard focus trapping.
 
 ---
 
 ## 1. Strategic Compliance Mapping
 
-| Category | Core Skill | WCAG Level | Product Impact | Technical Ref. |
+| Category | Core Skill | WCAG Level | Figma Focus (Design) | HTML Focus (Code) |
 | :--- | :--- | :--- | :--- | :--- |
-| **Structure** | 1. Hierarchy, Semantics & Landmarks | **A / AA** | Structural Navigation & SEO | WCAG 1.3.1, 2.4.1, 2.4.6 |
-| **Structure** | 2. Lists and Data Tables | **A** | Data Integrity | WCAG 1.3.1 |
-| **Design** | 3. Contrast and Discernibility | **AA / AAA** | Universal Readability | WCAG 1.4.3, 1.4.6, 1.4.11 |
-| **Interaction** | 4. Focus & Target Size | **A / AA** | Keyboard & Touch Precision | WCAG 2.1.1, 2.4.7, 2.5.8 |
-| **Forms** | 5. Input & Error Management | **A / AA** | Conversion & UX | WCAG 3.3.1, 3.3.2, 3.3.3, 1.3.5 |
-| **Content** | 6. Alternative Text | **A** | Visual Inclusion | WCAG 1.1.1 |
-| **Content** | 7. Accessible Media (Video/Audio) | **A / AA** | Sensory Inclusion | WCAG 1.2.2, 1.2.5 |
-| **Dynamic** | 8. ARIA & Rich Components | **A / AA** | Interface Robustness | W3C ARIA APG |
-| **Framework** | 9. Modern Framework Accessibility | **A / AA** | SPA & SSR Robustness | React Aria, Radix UI, Next.js |
-| **Mobile** | 10. Mobile Assistive Technology & Gestures | **A / AA** | Native Mobile Inclusion | iOS VoiceOver, Android TalkBack |
-| **Quality** | 11. Automated Testing & CI/CD | **A / AA** | Regression Prevention | axe-core, Playwright, Storybook |
-| **Performance** | 12. Performance & Motion Accessibility | **AA** | Cognitive & Visual Comfort | WCAG 2.3.3, prefers-reduced-motion |
-| **Cognitive** | 13. Cognitive Accessibility | **A / AA / AAA** | Inclusive UX for all | WCAG 3.3.x, COGA, Silver |
+| **Structure** | 1. Hierarchy, Semantics & Landmarks | **A / AA** | Typographic Hierarchy, Reading Order | Semantic Landmarks, Heading tags |
+| **Structure** | 2. Lists and Data Tables | **A** | Visual groupings, Clear grid layouts | `<ul>`/`<ol>` tags, semantic `<th>` headers |
+| **Design** | 3. Contrast and Discernibility | **AA / AAA** | Color contrast (4.5:1/3:1), Non-color cues | CSS color properties, High-Contrast support |
+| **Interaction** | 4. Focus & Target Size | **A / AA** | Touch target size (44x44px), Focus states | Keyboard tab order, focus ring, focus trap |
+| **Forms** | 5. Input & Error Management | **A / AA** | Visible labels, error layout placement | `<label>` binding, `aria-describedby` |
+| **Content** | 6. Alternative Text | **A** | Annotating decorative vs informative | Correct `alt="..."` or `alt=""` attributes |
+| **Content** | 7. Accessible Media (Video/Audio) | **A / AA** | Captions visual design, audio-description cues | WebVTT integration, keyboard player controls |
+| **Dynamic** | 8. ARIA & Rich Components | **A / AA** | Carousel buttons labeling, modal interaction | W3C Keyboard patterns, dynamic ARIA states |
+| **Framework** | 9. Modern Framework Accessibility | **A / AA** | Skeleton loader screens, transition alerts | SPA & SSR Robustness, hydration, Radix/Aria |
+| **Mobile** | 10. Native Gestures & Mobile AT | **A / AA** | Touch target margins, gesture alternatives | VoiceOver swipe order, Android TalkBack |
+| **Quality** | 11. Automated Testing & CI/CD | **A / AA** | Handoff visual specs, Figma plugins | axe-core integration, Jest-axe, regression |
+| **Performance** | 12. Performance & Motion | **AA** | Motion bypass options, auto-advance play/pause | `prefers-reduced-motion`, focus preservation |
+| **Cognitive** | 13. Cognitive Accessibility | **A / AA / AAA** | Layout simplicity, plain language | Lang tag, session extend warnings, COGA |
 
 ---
 
@@ -30,386 +45,228 @@
 
 ### 1. Hierarchy, Semantics & Landmarks
 
-- **Why it matters:** Defines the Accessibility Tree. Enables users to understand structure and jump between sections. Screen readers announce landmarks and allow shortcut navigation.
-- **Technical Acceptance Criteria:**
-  - **Required landmarks:** `<main>`, `<nav>`, `<header>`, `<aside>`, `<footer>`. Use `<form role="search">` for search regions.
-  - **Multiple regions of the same type** must have `aria-label` or `aria-labelledby` to differentiate them (e.g. two `<nav aria-label="Main navigation">`).
-  - **Generic region:** Use `role="region"` + `aria-label` for significant sections without a native landmark.
-  - **Headings:** Logical hierarchy H1 → H2 → H3. Never skip levels for aesthetic reasons. Every page/screen must have a unique, descriptive `<title>`.
-  - **Skip Links:** "Skip to main content" link visible at the top of the page (BBC & WebAIM requirement).
-  - **Reading order:** Source code must reflect logical visual order (left→right, top→bottom).
-  - **ARIA Rule #1 (WebAIM):** Always prefer native HTML elements. Use ARIA only when HTML is insufficient.
-  - **ARIA Rule #2:** Do not override native semantics unnecessarily (e.g. `<ul role="navigation">` destroys list benefits).
-- **How to Test:** Audit landmarks with a screen reader (NVDA/JAWS/VoiceOver). Check heading outline. Navigate using only `Tab` and `Shift+Tab`.
+- **Why it matters:** Establishes the core structure of the application. Allows assistive technologies to understand the hierarchy and navigate seamlessly. Screen readers announce landmarks and allow shortcut navigation.
+- **Audit Criteria:**
+  - 🎨 **Figma / Design:**
+    *   **Typographic Hierarchy:** Design a logical visual hierarchy where title sizes and weights clearly indicate their importance.
+    *   **Reading Flow:** Ensure visual content flows naturally (typically left-to-right, top-to-bottom) so that reading order is highly intuitive.
+    *   **Regional Segregation:** Clearly delineate visual page boundaries (main content, navigation sidebar, footer) so they translate to logical layout containers.
+  - 💻 **HTML / Code:**
+    *   **Landmarks:** Mandatory use of semantic landmark tags (`<main>`, `<nav>`, `<header>`, `<aside>`, `<footer>`). Use `<form role="search">` for search regions.
+    *   **Multiple regions of the same type** must have `aria-label` or `aria-labelledby` to differentiate them (e.g. `<nav aria-label="Main navigation">`).
+    *   **Headings:** Use logical heading order (H1 → H2 → H3). Never skip levels. Every page must have a unique `<title>`.
+    *   **Skip Links:** "Skip to main content" link visible at the top of the page.
+    *   **ARIA Rules:** Always prefer native HTML elements. Use ARIA only when HTML is insufficient. Do not override native semantics.
+- **How to Test:**
+  - *Figma:* Check visual typography scaling and flow diagrams.
+  - *HTML:* Audit landmarks with a screen reader. Check heading outline. Navigate using only `Tab` and `Shift+Tab`.
 
 ---
 
 ### 2. Lists and Data Tables
 
 - **Why it matters:** Communicates the number of items and relationships between complex data. Screen readers announce "List, X items".
-- **Technical Acceptance Criteria:**
-  - **Lists:** Use `<ul>`/`<ol>` for groups of 2+ items. Never use CSS `list-style: none` on functional lists without a role.
-  - **Tables:** Use `<th scope="col|row">` and `<caption>`. Never use tables for layout.
-  - **Grouping:** `<optgroup>` in selects — note: inconsistent screen reader support (WebAIM). Do not rely on it for critical context.
-  - **Complex tables:** Use `aria-labelledby` to concatenate multiple headers.
-- **How to Test:** Check screen reader announcements ("List, 5 items"). Navigate table cells with arrow keys.
+- **Audit Criteria:**
+  - 🎨 **Figma / Design:**
+    *   **Visual Grouping:** Group repeating elements (e.g., card decks, vertical lists) using clear spacing and visual alignment.
+    *   **Grid Structure:** Design tables with clearly defined boundaries, visually distinguished header rows, and legible data alignment.
+  - 💻 **HTML / Code:**
+    *   **Lists:** Wrap repeated elements in `<ul>` or `<ol>` tags with matching `<li>` children. Never use CSS `list-style: none` on functional lists without a role.
+    *   **Tables:** Use `<th scope="col|row">` and `<caption>`. Never use tables for layout.
+    *   **Complex tables:** Use `aria-labelledby` to concatenate multiple headers.
+- **How to Test:**
+  - *Figma:* Verify alignment, groupings, and visual clarity of grids.
+  - *HTML:* Check screen reader announcements ("List, 5 items"). Navigate table cells with arrow keys.
 
 ---
 
 ### 3. Contrast and Discernibility
 
 - **Why it matters:** Ensures readability under adverse conditions, for users with low vision, colour blindness, and in high-luminance environments.
-- **Technical Acceptance Criteria (BBC + WCAG):**
-
-| Content Type | Minimum Ratio (WCAG AA) | Enhanced Ratio (WCAG AAA) |
-| :--- | :--- | :--- |
-| Normal text (< 18pt / < 14pt bold) | **4.5:1** | 7:1 |
-| Large text (≥ 18pt / ≥ 14pt bold) | **3:1** | 4.5:1 |
-| UI components (input borders, functional icons) | **3:1** | — |
-| Inline links differentiated by colour only | **3:1** vs. surrounding text | — |
-
-  - **Gradients and images:** Apply a semi-transparent overlay or text-shadow. The measurement point is the lowest-contrast pixel in the text area (BBC guideline).
-  - **Colour must not be the only differentiator** — always combine with icon, underline, or shape (links, errors, states).
-  - **Text images:** Avoid. If necessary, apply 4.5:1.
-  - **QA Tools:** WebAIM Contrast Checker, TPG Colour Contrast Analyser, axe DevTools.
-- **How to Test:** Run Colour Contrast Analyser. Inspect colour via Dev Tools. Test with colour-blindness simulation.
+- **Audit Criteria:**
+  - 🎨 **Figma / Design:**
+    *   **Contrast Ratios:** Maintain the following minimum ratios:
+        *   Normal text (< 18pt / < 14pt bold): **4.5:1** (AA) / **7:1** (AAA).
+        *   Large text (≥ 18pt / ≥ 14pt bold): **3:1** (AA) / **4.5:1** (AAA).
+        *   UI components (input borders, active boundaries, functional icons): **3:1**.
+    *   **Gradients and images:** Apply a semi-transparent overlay or text-shadow. The measurement point is the lowest-contrast pixel in the text area.
+    *   **Colour is not the only differentiator:** Always combine colors with shapes, lines, text, or icons (e.g., active links must have underlines, error states must have helper text or warning icons).
+    *   **Text images:** Avoid text embedded directly in flat images.
+  - 💻 **HTML / Code:**
+    *   **CSS Contrast:** Ensure CSS color values maintain the approved contrast ratios in all states (hover, active, focus).
+    *   **High-Contrast support:** Support user system-level high-contrast or dark mode preferences.
+- **How to Test:**
+  - *Figma:* Run Colour Contrast Analyser or plugins (e.g., Stark). Test with colour-blindness simulation.
+  - *HTML:* Inspect calculated styles in DevTools. Test with system-level high contrast mode enabled.
 
 ---
 
 ### 4. Focus & Target Size
 
 - **Why it matters:** Critical for keyboard and mobile users. Without a visible focus indicator, keyboard users are "lost" in the interface.
-- **Technical Acceptance Criteria:**
-
-#### Focus Indicator
-  - **Prohibited:** `outline: 0` or `outline: none` on focusable elements without an equivalent visible substitute (WebAIM).
-  - **Minimum standard:** The indicator must have at least **3:1** contrast against the adjacent background (WCAG 2.4.11 — AA in WCAG 2.2).
-  - **Recommended:** Add a visible `background-color` or `border` in addition to the native outline.
-  - **ARIA Rule #4:** Focusable elements (reachable via `Tab`) must never have `aria-hidden="true"`.
-
-#### Target Size (BBC + WCAG 2.5.8)
-
-| Platform | Minimum Size | Rule |
-| :--- | :--- | :--- |
-| **Web (WCAG 2.5.8 AA)** | **24×24 CSS px** with 24px free space around | Minimum criterion |
-| **Web (best practice)** | **44×44 CSS px** | Recommended by WebAIM & iOS HIG |
-| **iOS** | **44×44 pt** with at least 1px between targets | Apple HIG requirement |
-| **Android** | **48×48 dp** with at least 8dp between controls | Material Design |
-| **BBC Mobile (physical)** | **7×7 mm** minimum | Smallest average human finger |
-| **BBC Mobile (recommended)** | **9–10 mm** | Full accessibility coverage |
-
-  - **CSS reference:** `button { box-sizing: border-box; min-width: 44px; min-height: 44px; }`
-  - **Grouping:** Adjacent links pointing to the same destination should be merged into a single touch target (BBC guideline).
-  - **tabindex="0":** Makes an element keyboard-focusable (use only on custom interactive widgets).
-  - **tabindex="-1":** Element focusable only programmatically (useful for error messages and dialogs).
-- **How to Test:** Navigate exclusively with `Tab`. Audit touch targets in Figma (measure in px/pt/dp). Validate visible focus ring.
+- **Audit Criteria:**
+  - 🎨 **Figma / Design:**
+    *   **Touch Targets:** Minimum visual size of **44x44px** (or 24x24px with sufficient safety spacing around the target to prevent overlapping clicks).
+    *   **Visual Focus State:** Explicitly design the visible focus state (e.g., `:focus` outline/ring) for all interactive components. It must have at least **3:1** contrast against both the component and the adjacent background.
+    *   **Focus Flow Sequence:** Document the planned keyboard navigation flow across the screen layout.
+  - 💻 **HTML / Code:**
+    *   **Focus Ring Preservation:** Never use `outline: 0` or `outline: none` on focusable elements without an equivalent visible substitute.
+    *   **Focus Trapping:** Implement robust focus trapping inside active dialogs/modals (focus must not leak to background elements).
+    *   **Interactive Targets:** Ensure DOM element sizes match target specifications. Correctly manage focusable elements with `tabindex` and `aria-hidden` rules.
+- **How to Test:**
+  - *Figma:* Measure target coordinate sizes and verify focus ring designs.
+  - *HTML:* Navigate exclusively with `Tab`. Validate focus outline visibility.
 
 ---
 
 ### 5. Input & Error Management
 
 - **Why it matters:** Reduces friction and prevents task abandonment. Users with cognitive disabilities depend on clear messages and guided correction.
-- **Technical Acceptance Criteria:**
-
-#### Labeling
-  - `<label for="id">` required and programmatically associated with every `<input>`.
-  - Clicking the label must activate/focus the control (quick association test — WebAIM).
-  - Groups of checkboxes/radio buttons: use `<fieldset>` + `<legend>` (legend should be brief).
-  - **Never nest fieldsets** — causes unexpected behaviour in screen readers.
-
-#### Required & Invalid
-  - Use the `required` HTML attribute OR `aria-required="true"` — screen readers announce "required".
-  - **Note:** An asterisk (*) as the only indicator of a required field is insufficient.
-  - After validation with errors: apply `aria-invalid="true"` to the field.
-  - Use `aria-describedby` to associate the field with its inline error message.
-  - Use `autocomplete` on fields with a known input purpose (WCAG 1.3.5).
-
-#### Error Recovery (3 approaches — WebAIM)
-1. **Error alert, then focus:** Accessible custom modal → announce error → focus on the problematic field.
-2. **Errors on top:** Error summary above the form with `focus()`. List all errors with links to each field.
-3. **Inline errors:** Messages in the context of each field via `aria-describedby`. Focus on the first invalid field.
-4. **Errors on top + Inline (combined):** Most robust approach (WebAIM best practice).
-
-#### BBC Error Protocol
-  - On form submit: use an `aria-live` region with a list of invalid fields above the form.
-  - Move focus to the error message on submit.
-  - `aria-invalid="true"` + `aria-describedby` + inline visual cues on each invalid field.
-
-#### Input Types
-  - Use `<input type="tel">`, `type="email"`, `type="number">`, `type="date">` — triggers correct mobile keyboard and native browser validation.
-  - **Avoid** multi-select `<select>` — inconsistent keyboard support across browsers. Prefer a group of checkboxes.
-  - **Avoid reset buttons** — easy to trigger accidentally (WebAIM citing NN/g).
-
-- **How to Test:** Submit the form with incorrect data. Check whether errors are announced. Test with keyboard only.
+- **Audit Criteria:**
+  - 🎨 **Figma / Design:**
+    *   **Visible Labels:** Form controls must have a visible, persistent text label. Do not hide important instructions or labels inside placeholder text.
+    *   **Error Indicators:** Visual error messages must appear close to their corresponding input, with descriptive helper text and support icons.
+    *   **Form Field States:** Design visual states for Hover, Focus, Disabled, Active, and Error.
+    *   **Grouping:** Place groups of checkboxes/radio buttons under a clear section title.
+  - 💻 **HTML / Code:**
+    *   **Label Binding:** Explicitly associate `<label>` tags to `<input>` fields via `for` and `id` matching. Use `<fieldset>` + `<legend>` for checkboxes/radios.
+    *   **Required & Invalid:** Set the `required` HTML attribute or `aria-required="true"`. Apply `aria-invalid="true"` and use `aria-describedby` to associate the field with its inline error message.
+    *   **Error Recovery Focus:** Move focus to error summaries on form submit or announce them via live regions. Use `autocomplete` attributes.
+- **How to Test:**
+  - *Figma:* Verify visual mockups for all input states and clear error layouts.
+  - *HTML:* Submit invalid form data. Check whether errors are announced. Test with keyboard only.
 
 ---
 
 ### 6. Alternative Text
 
 - **Why it matters:** Delivers image value to screen reader users. Impacts SEO. Critical when images fail to load.
-- **Technical Acceptance Criteria (WebAIM Alt Text Framework):**
-
-| Image Type | `alt` Attribute | Criterion |
-| :--- | :--- | :--- |
-| Informative image | Descriptive and concise | e.g. `alt="Astronaut Ellen Ochoa"` |
-| Decorative image | `alt=""` (null) | Never omit the attribute |
-| Linked image (sole link content) | Describe the function/destination | e.g. `alt="View Ellen Ochoa's profile"` |
-| Redundant image (content already in adjacent text) | `alt=""` (null) | Avoid redundancy |
-| Image button (`<input type="image">`) | Describe the action | e.g. `alt="Submit search"` |
-| Complex image (chart, map) | Brief alt + link to detailed description | — |
-| Logo linked to homepage | Company name | e.g. `alt="Acme Company"` |
-| CSS/background image | Do not use for informative content | — |
-
-  - Do not include "image of…" or "graphic of…" (screen readers already announce "graphic").
-  - `longdesc` is **deprecated** — do not use.
-- **How to Test:** Disable images and verify the page context remains clear.
+- **Audit Criteria:**
+  - 🎨 **Figma / Design:**
+    *   **Image Classification:** Document in annotations whether an image is "Informative" or "Decorative".
+    *   **Alt Spec:** Write proposed descriptive text in the design annotations for all informative visuals (describing function/destination for links or actions).
+  - 💻 **HTML / Code:**
+    *   **Informative Images:** Apply a functional, concise `alt="..."` description.
+    *   **Decorative Images:** Set empty alt tags `alt=""` so assistive tools ignore them.
+- **How to Test:**
+  - *Figma:* Read design annotations for alternative text descriptions.
+  - *HTML:* Disable images on the web browser and verify if the page remains perfectly understandable.
 
 ---
 
 ### 7. Accessible Media (Video & Audio)
 
 - **Why it matters:** Inclusion for deaf, blind, and hearing/visually impaired users.
-- **Technical Acceptance Criteria:**
-
-| Requirement | WCAG Level | Application |
-| :--- | :--- | :--- |
-| **Synchronised captions** | **A (WCAG 1.2.2)** | All relevant audio in pre-recorded video |
-| **Text transcripts** | **A (WCAG 1.2.1)** | Podcasts and standalone audio |
-| **Audio description** | **AA (WCAG 1.2.5)** | Visual actions not covered by narration |
-| **Accessible player controls** | **A (WCAG 4.1.2)** | All controls operable by keyboard + `aria-label` |
-| **No autoplay with audio** | **AA (WCAG 1.4.2)** | Autoplay only without sound, with a visible stop control |
-
-  - **Caption format:** Provide SRT or VTT files.
-  - **Autoplay (BBC rule):** Video may autoplay without sound if a visible pause/stop control is present.
-- **How to Test:** Watch without sound → validate captions. Test all player controls with keyboard.
+- **Audit Criteria:**
+  - 🎨 **Figma / Design:**
+    *   **Player Controls:** Visual designs must include high-contrast and keyboard-tabbable controls (Play, Pause, Progress, Mute, Closed Captions).
+    *   **Transcript Accessibility:** Design a visible entry point (link or button) to download or read text transcripts of video or audio.
+  - 💻 **HTML / Code:**
+    *   **Captions/Tracks:** Implement `<track>` elements with SRT/WebVTT captions files for video and audio markup.
+    *   **Autoplay:** Video may autoplay without sound if a visible pause/stop control is present.
+    *   **Keyboard Controls:** All custom player controls must be operable by keyboard and labeled with correct accessible names.
+- **How to Test:**
+  - *Figma:* Review media player component screens and layout links.
+  - *HTML:* Watch content without sound and check keyboard interactions on video players.
 
 ---
 
 ### 8. ARIA & Rich Components (W3C APG)
 
 - **Why it matters:** Communicates states and behaviours for complex UIs (SPAs). ARIA extends HTML's semantic vocabulary for cases not natively covered.
-- **5 Core Rules of ARIA Use (WebAIM):**
-  1. **Rule #1:** If a native HTML element exists, use it. Use ARIA only when HTML is insufficient.
-  2. **Rule #2:** Do not change native semantics.
-  3. **Rule #3:** All interactive ARIA controls must be keyboard operable.
-  4. **Rule #4:** Interactive controls must not be hidden (`aria-hidden="true"` on focusable elements is prohibited).
-  5. **Rule #5:** Every interactive element must have a descriptive accessible name.
-
-- **Criteria by Component:**
-
-#### Button
-  - **ARIA:** `role="button"`. Toggles: `aria-pressed="true/false"`. With popup: `aria-haspopup`.
-  - **Disclosure/Accordion:** `aria-expanded="true|false"`.
-  - **Keyboard:** `Enter` or `Space` activates.
-  - **Handoff:** `aria-label` required for icon-only buttons.
-
-#### Modal Dialog (W3C APG)
-  - **ARIA:** `role="dialog"`, `aria-modal="true"`, `aria-labelledby`.
-  - **Keyboard:** `Tab` loops within the dialog. `Shift+Tab` navigates in reverse. `Escape` closes.
-  - **Focus placement:** First focusable element (simple content) / `tabindex="-1"` on a static element (complex content).
-  - On close: focus **returns to the trigger element**.
-
-#### Tabs
-  - **ARIA:** `role="tablist"`, `role="tab"`, `aria-selected="true/false"`, `role="tabpanel"`.
-  - **Keyboard:** `←` `→` navigates and activates tabs. `Tab` enters/exits the group.
-
-#### Accordion
-  - **ARIA:** Header as `<button aria-expanded="true|false" aria-controls="panel-id">`.
-  - **Keyboard:** `Space/Enter` → toggle. `↑` `↓` → navigate between headers.
-
-#### Slider
-  - **Keyboard:** `←` `→` increments/decrements. `Home/End` → min/max. `PageUp/Down` → larger step.
-
-#### Live Regions (Dynamic Content)
-  - `aria-live="polite"`: Announce after a pause. Use for: status, notifications.
-  - `aria-live="assertive"`: Announce immediately. Use **only for critical errors**.
-  - `role="alert"`: Equivalent to `aria-live="assertive"`.
-  - **BBC rule:** `aria-live` must be defined at page load — injecting it later via JS is unreliable.
-
-#### ARIA Labelling (Priority Hierarchy)
-  - `aria-labelledby` > `aria-label` > `<label>` > `alt` > element text content.
-  - `aria-label` overrides visual labels — ensure the accessible name includes the visible text (WCAG 2.5.3).
-  - `aria-describedby` → read after the label — use for instructions and inline error messages.
-
-- **How to Test:** Screen reader validation (NVDA/JAWS/VoiceOver). axe DevTools. WAVE.
-
----
-
-## 3. QA Tools Reference
-
-| Tool | Type | Primary Use |
-| :--- | :--- | :--- |
-| **[WAVE (WebAIM)](https://wave.webaim.org/)** | Browser extension / API | Automated detection: errors, alerts, structure |
-| **[axe DevTools (Deque)](https://www.deque.com/axe/)** | Browser extension / CI-CD | Automated tests, pipeline integration |
-| **[WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker)** | Web tool | Contrast ratio verification |
-| **TPG Colour Contrast Analyser** | Desktop app | Eyedropper contrast analysis on any screen |
-| **NVDA / JAWS** | Screen reader (Windows) | Real announcement testing |
-| **VoiceOver** | Screen reader (iOS/macOS) | Real mobile/desktop Apple testing |
-| **Android Accessibility Scanner** | Mobile app | Target size and contrast audit on Android |
-
+- **Audit Criteria:**
+  - 🎨 **Figma / Design:**
+    *   **Interaction Context:** Document exactly how rich elements behave (e.g., auto-sliding carousels must have play/pause visual buttons).
+    *   **Icon-Only Button Labels:** Explicitly annotate visual icons that act as controls (such as "next" and "previous" chevron arrows on a carousel) with their intended descriptive names (e.g., "Next Slide", "Previous Slide").
+  - 💻 **HTML / Code:**
+    *   **Button & Toggles:** Implement correct `role="button"` and toggles using `aria-pressed="true/false"`.
+    *   **Modal Dialogs:** Apply `role="dialog"`, `aria-modal="true"`. Restrict keyboard focus to the active modal (Focus Loop). Return focus to the trigger on close.
+    *   **Tabs & Accordions:** Implements correct markup (`role="tablist"`, `role="tab"`, `role="tabpanel"`, `aria-selected`, `aria-expanded`). Follow W3C keyboard arrow key patterns.
+    *   **Live Regions:** Utilize `aria-live="polite"` or `role="alert"` (equivalent to `assertive`) to announce dynamic content updates.
+- **How to Test:**
+  - *Figma:* Review carousel and interactive layout control designs.
+  - *HTML:* Validate state transitions with a screen reader and navigate solely using keyboard arrow and tab keys.
 
 ---
 
 ### 9. Modern Framework Accessibility
 
 - **Why it matters:** SPAs and SSR frameworks break native browser behaviours — page transitions don't reload, focus is not restored, and dynamic content is not announced without explicit management.
-- **Technical Acceptance Criteria:**
-
-#### React / Next.js
-  - **Hydration:** Ensure server-rendered ARIA attributes match client-rendered output — hydration mismatches can silently remove roles and states.
-  - **Route transitions (Next.js App Router):** On navigation, move focus to the `<h1>` or a `tabindex="-1"` landmark. Use `aria-live="polite"` region to announce the new page title.
-  - **Suspense / loading states:** Wrap loading boundaries with a visible loading indicator + `aria-busy="true"` on the container. Provide a `role="status"` message (e.g. "Loading results…").
-  - **Server Components:** Server components render no event handlers — interactive controls (buttons, links) must be Client Components. Do not place `onClick` on Server Component elements.
-  - **Virtualized lists (react-window, TanStack Virtual):** Expose total item count via `aria-setsize` and current position via `aria-posinset`. Announce loaded chunks via a polite live region.
-  - **Portals:** Elements rendered in a portal (e.g. modals, tooltips) must still follow focus management rules. The portal root must be outside `aria-hidden` containers.
-
-#### Headless UI Libraries
-  - **React Aria (Adobe):** Preferred for production — implements W3C APG keyboard patterns out of the box. Provides hooks (`useButton`, `useDialog`, `useListBox`) that handle ARIA states automatically.
-  - **Radix UI:** Accessible primitives with correct roles and keyboard behaviour. Customise visuals freely; do not override data-state or role attributes.
-  - **Headless UI (Tailwind Labs):** Correct ARIA for Dialog, Listbox, Combobox. Always provide visible labels — the library does not generate them automatically.
-  - **Rule:** Prefer headless libraries over building custom ARIA widgets from scratch. Verify keyboard behaviour with a screen reader after integrating — library defaults may not cover all edge cases.
-
-#### SPA Navigation Announcements
-  - Inject a visually-hidden `aria-live="polite"` region at root level (present from initial load).
-  - On each route change, update its text content with the new page title (e.g. `"Dashboard — App Name"`).
-  - Delay the announcement by ~100ms to allow DOM rendering to settle before the SR reads.
-  - Libraries: `@reach/skip-nav`, `next-a11y`, or a custom `useRouteAnnouncer` hook.
-
-- **How to Test:** Navigate between routes with VoiceOver/NVDA active. Verify page title is announced. Tab through the new page — confirm focus is not stranded on a removed element.
+- **Audit Criteria:**
+  - 🎨 **Figma / Design:**
+    *   **Skeleton Loading States:** Design visible skeleton loader layouts with high-contrast indicator shapes.
+    *   **State indicators:** Graphically plan the visual indicators for dynamic rendering blocks and pagination.
+  - 💻 **HTML / Code:**
+    *   **Hydration:** Ensure server-rendered ARIA attributes match client-rendered output to prevent role stripping.
+    *   **Route transitions:** On navigation, move focus to the `<h1>` or a `tabindex="-1"` landmark and announce transitions via `aria-live`.
+    *   **Skeleton Busy States:** Wrap loading skeletons with `aria-busy="true"` and `role="status"` announcements.
+    *   **Headless Libraries:** Utilize accessible primitives (e.g. Radix UI, React Aria) that implement W3C APG keyboard patterns.
+- **How to Test:**
+  - *Figma:* Verify state mockups for loading overlays and skeleton components.
+  - *HTML:* Navigate routes with VoiceOver/NVDA active. Confirm focus is not stranded on a removed element.
 
 ---
 
-### 10. Mobile Assistive Technology & Gestures
+### 10. Native Gestures & Mobile AT
 
 - **Why it matters:** Touch-first interfaces require gesture-aware design. Screen reader gestures on mobile differ fundamentally from keyboard navigation on desktop.
-
-#### iOS VoiceOver
-  - **Rotor navigation:** Users activate the rotor (two-finger twist) to switch navigation mode (Headings, Links, Form Controls, Landmarks, etc.). Ensure heading hierarchy and landmark structure are correct — rotor usability depends entirely on semantic markup.
-  - **Swipe order:** VoiceOver reads elements in DOM order, not visual order. CSS `order`, `flex-direction: row-reverse`, and `position: absolute` can create a mismatch between visual and swipe order. Always verify swipe sequence with VoiceOver active.
-  - **Semantic grouping:** Use `accessibilityElements` equivalent in web: group related elements with `role="group"` + `aria-label` so VoiceOver announces them as a unit instead of reading each child separately.
-  - **iOS Accessibility Tree nuances:** `display: contents` can drop elements from the iOS AT tree. `visibility: hidden` hides from VoiceOver; `opacity: 0` does not. Test both.
-  - **Custom actions:** For complex gestures (drag-to-reorder, swipe-to-delete), provide alternative accessible actions via `aria-roledescription` + keyboard/button equivalents.
-
-#### Android TalkBack
-  - **Gesture set:** Swipe right/left → next/previous element. Double-tap → activate. Two-finger swipe → scroll. Swipe up then right → activate first item in linear navigation.
-  - **Explore by touch:** TalkBack reads elements on finger hover. Ensure touch targets are large enough (48×48 dp) and that decorative elements are hidden (`importantForAccessibility="no"` equivalent: `aria-hidden="true"`).
-  - **Linear navigation vs. reading order:** TalkBack uses DOM order for linear navigation. Same swipe-order rule as VoiceOver applies.
-  - **Grouping:** Use `role="group"` + `aria-label` to group related controls (e.g. a card with image + title + button) into a single focusable unit — reduces swipe count.
-
-#### Mobile-First Semantic Grouping
-  - Design cards as a single focusable unit with a descriptive label rather than 3–5 separate focusable elements (image, title, button, price, tag).
-  - Pattern: wrapper element with `role="article"` or `role="listitem"`, a single `aria-label` describing the card's purpose, and inner interactive elements only focusable when the user explicitly enters the group.
-
-- **How to Test:** Enable VoiceOver (iOS: Settings → Accessibility → VoiceOver). Swipe through the entire screen. Enable TalkBack (Android: Settings → Accessibility → TalkBack). Verify swipe order matches visual intent.
+- **Audit Criteria:**
+  - 🎨 **Figma / Design:**
+    *   **Touch spacing:** Minimum margin sizes (8dp on Android, 1px on iOS) between active controls to prevent miss-touches.
+    *   **Gesture alternatives:** Design simple tapping button alternatives for all complex gestures (e.g., if swiping a row deletes it, design an alternative options menu accessible by a single tap).
+  - 💻 **HTML / Code:**
+    *   **Swipe order:** Ensure visual swipe sequence matches DOM source order. Prevent mobile-AT mismatches.
+    *   **Semantic grouping:** Group related text and badges (e.g., in lists or cards) under a single `role="group"` + `aria-label` container.
+- **How to Test:**
+  - *Figma:* Measure margins and review layout files for gesture alternatives.
+  - *HTML:* Enable VoiceOver on iOS or TalkBack on Android and swipe through the full interface.
 
 ---
 
 ### 11. Automated Testing & CI/CD
 
 - **Why it matters:** Manual audits find ~30% of issues. Automated testing catches the remaining systematic errors continuously, not just at release time.
-- **Technical Acceptance Criteria:**
-
-#### Tool Stack
-  - **axe-core:** Rule engine used by axe DevTools, Playwright, Jest-axe, Cypress-axe. Run as the baseline for all automated checks.
-  - **jest-axe / @testing-library + axe:** Unit-level accessibility assertions on component render. Add to every component test file.
-  - **Cypress-axe:** Integration-level checks on rendered pages. Run `cy.checkA11y()` after key user interactions.
-  - **Playwright + axe:** E2E accessibility snapshots across full user flows (login → dashboard → form submit). Export results as JSON for diffing.
-  - **Storybook a11y addon (`@storybook/addon-a11y`):** Runs axe on every Story in the browser. Add to CI so Stories fail on axe violations.
-  - **eslint-plugin-jsx-a11y:** Static analysis for common ARIA mistakes in JSX at development time. Required in `.eslintrc`.
-
-#### CI/CD Pipeline
-  ```
-  PR opened → eslint-plugin-jsx-a11y (lint) → jest-axe (unit) → Storybook a11y (component) → Playwright axe (E2E) → PR blocked if violations
-  ```
-  - Set axe `runOnly` to `wcag2a`, `wcag2aa`, `wcag21aa`, `best-practice`.
-  - Configure `disableRules` only with documented justification + issue tracker link.
-  - Export axe results to a JSON artefact per build — diff against the previous build to detect regressions.
-
-#### Accessibility Budget
-  - Define a maximum allowed violation count per severity level (critical, serious, moderate, minor).
-  - **Critical / Serious:** Zero tolerance — blocks merge.
-  - **Moderate / Minor:** Tracked and resolved within agreed sprint. Never increase week-over-week.
-  - Document the budget in `a11y.config.json` at the repo root.
-
-#### Regression Testing
-  - Playwright accessibility snapshots: capture the full axe results tree and commit as a snapshot. CI fails if new violations appear.
-  - Screen reader smoke test (manual, quarterly): NVDA + Chrome and VoiceOver + Safari — run the top 5 user flows.
-
-- **How to Test:** Run `npx axe-cli <url>` for a quick CLI audit. Check CI pipeline logs for axe violations on each PR.
+- **Audit Criteria:**
+  - 🎨 **Figma / Design:**
+    *   **Quality Handoff:** Apply Figma accessibility plug-ins to review contrasts and target sizes before handoff.
+  - 💻 **HTML / Code:**
+    *   **Pipeline integration:** Implement `eslint-plugin-jsx-a11y` in build steps and `jest-axe` in unit tests.
+    *   **E2E Validation:** Integrate `cypress-axe` or Playwright accessibility snapshots into core user flows. Set zero-tolerance for critical/serious accessibility budgets.
+- **How to Test:**
+  - *Figma:* Review design handoff annotation layers.
+  - *HTML:* Verify pipeline execution logs and ESLint output.
 
 ---
 
-### 12. Performance & Motion Accessibility
+### 12. Performance & Motion
 
-- **Why it matters:** Performance degradation creates accessibility barriers — lost focus on re-render, inaccessible skeleton states, and CLS disorienting keyboard users. Motion can trigger vestibular disorders.
-- **Technical Acceptance Criteria:**
-
-#### Motion & Animation
-  - **`prefers-reduced-motion`:** All non-essential animations must be disabled or simplified when this media query is active.
-    ```css
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-    ```
-  - **`prefers-reduced-transparency`:** Reduce or eliminate blur/glassmorphism effects.
-  - **Parallax:** Always off when `prefers-reduced-motion: reduce`. Parallax is a known vestibular disorder trigger.
-  - **Carousels / auto-advancing content:** Must have pause control (WCAG 2.2.2). Default: paused or speed ≤ 5 seconds between transitions.
-  - **Animation interruption:** Any animation that persists > 3 seconds must be stoppable, pausable, or hideable.
-  - **WCAG 2.3.3 (AAA):** Animation from interactions can be disabled. Treat as a strong recommendation.
-
-#### Skeleton Loading
-  - Skeleton screens must have `aria-busy="true"` on their container and `aria-label="Loading…"`.
-  - Do not use `aria-hidden="true"` on skeleton containers — screen readers will skip and receive no feedback.
-  - When content loads, remove `aria-busy`, restore focus if needed, and optionally announce completion via `role="status"`.
-
-#### CLS & Focus Loss
-  - **Cumulative Layout Shift (CLS):** Layout shifts can move the focused element off-screen or cause focus to be lost. Reserve space for dynamic content (images, ads, embeds) to prevent CLS.
-  - **Focus loss rule:** If the focused element is removed from the DOM (e.g. a drawer closes), focus must be explicitly moved — never allowed to fall back to `<body>`.
-  - **Lazy loading:** Images loaded below the fold must have explicit `width` and `height` attributes to prevent CLS.
-
-#### Cognitive Load & Performance
-  - **Time limits (WCAG 2.2.1):** Any time-limited action must be extendable, adjustable, or turn-off-able.
-  - **Interruptions (WCAG 2.2.4):** Notifications and alerts must be postponable (except emergencies).
-  - **Re-authentication (WCAG 2.2.5):** On session expiry, preserve all user data entered.
-
-- **How to Test:** Enable `prefers-reduced-motion` in OS settings (macOS: Accessibility → Display → Reduce Motion). Simulate CLS with Lighthouse. Audit `aria-busy` states during loading with screen reader active.
+- **Why it matters:** Performance degradation creates accessibility barriers. Motion can trigger vestibular disorders.
+- **Audit Criteria:**
+  - 🎨 **Figma / Design:**
+    *   **Motion Control:** Design visual options or play/pause buttons to disable heavy vestibular-triggering animations (e.g., auto-advancing carousels, parallax effects, or fast zoom transitions).
+  - 💻 **HTML / Code:**
+    *   **Reduced Motion CSS:** Implements `prefers-reduced-motion` media queries in CSS to shut down transitions when requested.
+    *   **CLS prevention:** Reserve layout space for images and async dynamic elements to preventCumulative Layout Shift. Focus preservation on element deletion.
+- **How to Test:**
+  - *Figma:* Check carousel controls and motion specs.
+  - *HTML:* Enable `prefers-reduced-motion` in OS settings and check CSS response.
 
 ---
 
 ### 13. Cognitive Accessibility
 
-- **Why it matters:** 1 in 6 people has a cognitive or learning disability. WCAG 2.x underserves this group — WCAG 3 / Silver and the COGA (Cognitive Accessibility Guidance) task force address this gap directly.
-- **Technical Acceptance Criteria:**
-
-#### Reading & Language
-  - **Plain language:** Target a reading level appropriate for a 9-year-old (WCAG 3.1.5 AAA, COGA recommendation). Avoid jargon, acronyms, and passive voice.
-  - **Reading complexity:** Use short sentences (< 20 words), short paragraphs (< 4 sentences), and descriptive link text.
-  - **Text spacing (WCAG 1.4.12):** No loss of content when line-height ≥ 1.5×, letter-spacing ≥ 0.12em, word spacing ≥ 0.16em.
-  - **`lang` attribute:** Required on `<html>` and on any inline text in a different language — screen readers use it to switch speech synthesiser voice.
-  - **Dyslexia support:** Avoid justified text (creates uneven spacing). Prefer sans-serif fonts. Allow user font-size scaling without breaking layout (WCAG 1.4.4).
-
-#### Cognitive Overload & Distraction
-  - **Reduce visual noise:** Limit the number of actions available at once. Use progressive disclosure for complex forms.
-  - **Consistent navigation (WCAG 3.2.3):** Navigation components must appear in the same order on every page.
-  - **Consistent identification (WCAG 3.2.4):** Components with the same function must have the same label/name across pages.
-  - **Distraction reduction:** Moving, blinking, or scrolling content that starts automatically must be stoppable (WCAG 2.2.2).
-  - **Session timeouts:** Warn users at least 20 seconds before an authenticated session expires (WCAG 2.2.1).
-
-#### Timing & Interruptions
-  - **No time limits** on tasks unless absolutely necessary (security exceptions apply).
-  - **`aria-live="assertive"`** use must be minimal — it interrupts the user's current cognitive task.
-  - **Modals and popups** must not open without a user action — unexpected focus changes are highly disruptive for cognitive disabilities.
-  - **Error prevention (WCAG 3.3.4):** For legal or financial submissions, provide review + confirm step, or allow reversal.
-
-#### WCAG 3 / Silver Direction
-  - WCAG 3 moves from pass/fail binary to a **scoring model** — components earn points across multiple conformance levels.
-  - **COGA patterns** (precursor content for WCAG 3): chunking information, supporting memory, reducing cognitive barriers, providing reminders and feedback.
-  - **Design implication:** Start building a cognitive accessibility layer now — plain language reviews, user testing with neurodiverse participants, and distraction audits.
-
-- **How to Test:** Hemingway Editor for reading level. Manual review of navigation consistency across pages. User testing with participants who have cognitive disabilities or dyslexia.
+- **Why it matters:** 1 in 6 people has a cognitive or learning disability. WCAG 3 / Silver and the COGA guidelines address this gap directly by prioritizing layout simplicity.
+- **Audit Criteria:**
+  - 🎨 **Figma / Design:**
+    *   **Consistent Layouts:** Maintain identical navigation and component sequences across all layout screens.
+    *   **Visual Simplicity:** Prevent cognitive overload by limiting visual noise, dividing complex forms progressively, and leveraging clean whitespace.
+    *   **Plain language:** Review microcopy to target clear reading levels. Avoid justified text block alignments.
+  - 💻 **HTML / Code:**
+    *   **Language tags:** Define correct `lang="..."` attributes on the root HTML element and on inline code shifts.
+    *   **Session warnings:** Warn users at least 20 seconds before sessions expire, offering a simple click to extend.
+- **How to Test:**
+  - *Figma:* Conduct visual simplicity audits and evaluate font and alignment rules.
+  - *HTML:* Check correct lang attributes in source code.
 
 ---
 
@@ -436,4 +293,3 @@
 ## Navigation
 - [RESOURCES.md](RESOURCES.md) - Reference Library.
 - [HANDOFF.md](HANDOFF.md) - Engineering Specifications.
-
